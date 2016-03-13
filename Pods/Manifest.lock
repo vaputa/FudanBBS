@@ -1,0 +1,45 @@
+PODS:
+  - AFNetworking (3.0.4):
+    - AFNetworking/NSURLSession (= 3.0.4)
+    - AFNetworking/Reachability (= 3.0.4)
+    - AFNetworking/Security (= 3.0.4)
+    - AFNetworking/Serialization (= 3.0.4)
+    - AFNetworking/UIKit (= 3.0.4)
+  - AFNetworking/NSURLSession (3.0.4):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (3.0.4)
+  - AFNetworking/Security (3.0.4)
+  - AFNetworking/Serialization (3.0.4)
+  - AFNetworking/UIKit (3.0.4):
+    - AFNetworking/NSURLSession
+  - Masonry (0.6.4)
+  - Ono (1.2.2)
+  - ReactiveCocoa (4.0.1):
+    - ReactiveCocoa/UI (= 4.0.1)
+    - Result (~> 1.0.2)
+  - ReactiveCocoa/Core (4.0.1):
+    - ReactiveCocoa/no-arc
+    - Result (~> 1.0.2)
+  - ReactiveCocoa/no-arc (4.0.1):
+    - Result (~> 1.0.2)
+  - ReactiveCocoa/UI (4.0.1):
+    - ReactiveCocoa/Core
+    - Result (~> 1.0.2)
+  - Result (1.0.2)
+
+DEPENDENCIES:
+  - AFNetworking
+  - Masonry
+  - Ono
+  - ReactiveCocoa
+
+SPEC CHECKSUMS:
+  AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
+  Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
+  Ono: 80b1c686777d3f6d5d5ce6fcac8a74afef4ca197
+  ReactiveCocoa: f7011630aee4deeb16352fcb1b50d6bde9db4f90
+  Result: dd3dd71af3fa2e262f1a999e14fba2c25ec14f16
+
+COCOAPODS: 0.39.0
