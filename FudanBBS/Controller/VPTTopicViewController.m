@@ -210,7 +210,7 @@
                                                  }];
                         }
                         for (ONOXMLElement *a in [p childrenWithTag:@"a"]) {
-                            if ([[a attributes][@"href"] hasPrefix:@"http://bbs.fudan.edu.cn/upload/PIC/"]) {
+                            if ([[a attributes][@"href"] hasPrefix:@"http://bbs.fudan.edu.cn/upload/"]) {
                                 [content addObject:@{
                                                      @"type": @"image",
                                                      @"href": [a attributes][@"href"]

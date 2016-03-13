@@ -10,7 +10,6 @@
 
 @interface VPTPostTableViewCell : UITableViewCell
 @property (nonatomic, strong) UILabel *date;
-@property (nonatomic, strong) UILabel *text;
 @property (nonatomic, strong) UILabel *reply;
 @property (nonatomic, strong) UILabel *user;
 @property (nonatomic, strong) UIView *content;

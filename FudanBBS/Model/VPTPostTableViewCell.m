@@ -20,7 +20,6 @@
     if (self) {
         _user = [[UILabel alloc] init];
         _date = [[UILabel alloc] init];
-        _text = [[UILabel alloc] init];
         _reply = [[UILabel alloc] init];
         _content = [[UIView alloc] init];
         
@@ -29,10 +28,6 @@
         [_date setText:@"2015/01/01 00:00"];
         [_date setFont:[UIFont systemFontOfSize:12]];
         
-        [_text setPreferredMaxLayoutWidth:[[UIScreen mainScreen] bounds].size.width - 20];
-        [_text setNumberOfLines:0];
-        [_text setFont:[UIFont systemFontOfSize:13]];
-
         [_reply setPreferredMaxLayoutWidth:[[UIScreen mainScreen] bounds].size.width - 20];
         [_reply setNumberOfLines:0];
         [_reply setFont:[UIFont systemFontOfSize:10]];
@@ -40,34 +35,26 @@
         
         [self.contentView addSubview:_user];
         [self.contentView addSubview:_date];
-        [self.contentView addSubview:_text];
         [self.contentView addSubview:_reply];
         [self.contentView addSubview:_content];
 
         [_user mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.contentView);
-            make.left.equalTo(_text);
+            make.left.equalTo(_content);
         }];
         [_date mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(_user.mas_bottom);
-            make.left.equalTo(_text);
+            make.left.equalTo(_content);
         }];
-//        [_text mas_remakeConstraints:^(MASConstraintMaker *make) {
-//            make.width.equalTo(self.contentView).offset(-20);
-//            make.top.equalTo(_date.mas_bottom).offset(10);
-//            make.bottom.equalTo(_reply.mas_top);
-//            make.centerX.equalTo(self.contentView);
-//        }];
         [_reply mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.width.equalTo(self.contentView).offset(-20);
             make.bottom.equalTo(self.contentView).offset(-10);
             make.centerX.equalTo(self.contentView);
         }];
-        
         [_content mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.width.equalTo(self.contentView).offset(-20);
             make.top.equalTo(_date.mas_bottom).offset(10);
-            make.bottom.equalTo(_reply.mas_top);
+            make.bottom.equalTo(_reply.mas_top).offset(-10);
             make.centerX.equalTo(self.contentView);
         }];
         
