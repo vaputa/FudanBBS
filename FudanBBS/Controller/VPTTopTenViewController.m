@@ -24,7 +24,6 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        [self setTitle:@"今日十大"];
     }
     return self;
 }
@@ -42,6 +41,11 @@
     
     [VPTNetworkService request:@"http://bbs.fudan.edu.cn/bbs/top10" delegate:self];
     [self updateViewConstraints];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.tabBarController setTitle:@"今日十大"];    
 }
 
 - (void)updateViewConstraints{

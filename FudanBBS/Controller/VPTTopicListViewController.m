@@ -41,6 +41,7 @@
     _tableView = [[UITableView alloc] init];
     [_tableView setDelegate:self];
     [_tableView setDataSource:self];
+    [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
     if (_topicListViewType == VPTTopicListViewTypeDataFromBoard) {
         _footerView = [self tableFooterView];
         [_tableView setTableFooterView:_footerView];
@@ -55,9 +56,15 @@
     [_btnFavourite setBackgroundImage:[UIImage imageNamed:_isFavourite ? @"icon_favourite" : @"icon_unfavourite"] forState:UIControlStateNormal];
     [_btnFavourite addTarget:self action:@selector(toggleFavourite) forControlEvents:UIControlEventTouchUpInside];
     
-    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithCustomView:_btnFavourite]];
-
+    if (_topicListViewType == VPTTopicListViewTypeDataFromBoard) {
+        self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithCustomView:_btnFavourite]];
+    }
     [self updateViewConstraints];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.navigationItem setTitle:_boardName];
 }
 
 - (void)toggleFavourite {
@@ -84,22 +91,21 @@
 - (UIView *)tableFooterView {
     _footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 30)];
     
-    NSDictionary *normal = [NSDictionary dictionaryWithObjects:[[NSArray alloc] initWithObjects:[UIFont systemFontOfSize:14], [UIColor blueColor], nil]
+    NSDictionary *normal = [NSDictionary dictionaryWithObjects:[[NSArray alloc] initWithObjects:[UIFont systemFontOfSize:14], [UIColor blackColor], nil]
                                                        forKeys:[[NSArray alloc] initWithObjects:NSFontAttributeName, NSForegroundColorAttributeName, nil]];
-    NSDictionary *disabled = [NSDictionary dictionaryWithObjects:[[NSArray alloc] initWithObjects:[UIFont systemFontOfSize:14], [UIColor grayColor], nil]
-                                                         forKeys:[[NSArray alloc] initWithObjects:NSFontAttributeName, NSForegroundColorAttributeName, nil]];
     
     _prevPage = [[UIButton alloc] init];
     _nextPage = [[UIButton alloc] init];
     
+    [_prevPage setImage:[UIImage imageNamed:@"icon_last"] forState:UIControlStateNormal];
+    [_nextPage setImage:[UIImage imageNamed:@"icon_next"] forState:UIControlStateNormal];
+
     [_prevPage setAttributedTitle:[[NSAttributedString alloc] initWithString:@"上一页" attributes:normal] forState:UIControlStateNormal];
     [_nextPage setAttributedTitle:[[NSAttributedString alloc] initWithString:@"下一页" attributes:normal] forState:UIControlStateNormal];
-    
-    [_prevPage setAttributedTitle:[[NSAttributedString alloc] initWithString:@"上一页" attributes:disabled] forState:UIControlStateDisabled];
-    [_nextPage setAttributedTitle:[[NSAttributedString alloc] initWithString:@"下一页" attributes:disabled] forState:UIControlStateDisabled];
-    
-    [_prevPage setBackgroundColor:[UIColor grayColor]];
-    [_nextPage setBackgroundColor:[UIColor grayColor]];
+
+    _nextPage.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+    _nextPage.titleLabel.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+    _nextPage.imageView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
     
     [_prevPage addTarget:self action:@selector(goToPrevPage) forControlEvents:UIControlEventTouchUpInside];
     [_nextPage addTarget:self action:@selector(goToNextPage) forControlEvents:UIControlEventTouchUpInside];
@@ -202,8 +208,8 @@
             _boardStart = [[topic attributes][@"start"] integerValue];
         }
     }
-    [_nextPage setEnabled:_boardStart + 20 <= _boardTotal];
-    [_prevPage setEnabled:_boardStart > 0];
+    [_nextPage setHidden:!(_boardStart + 20 <= _boardTotal)];
+    [_prevPage setHidden:!(_boardStart > 0)];
     [_footerView setHidden:!([_nextPage isEnabled] || [_prevPage isEnabled])];
     [_tableView reloadData];
 }

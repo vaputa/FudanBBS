@@ -158,7 +158,7 @@
     [cell.date setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"date"]];
     [cell.user setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"nick"]];
     [cell buildContent:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"content"]];
-
+    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     if (_showQuote) {
         [cell.reply setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"reply"]];
     }

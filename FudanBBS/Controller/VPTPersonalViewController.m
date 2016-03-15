@@ -31,6 +31,7 @@
     _tableView = [[UITableView alloc] init];
     _tableView.delegate = self;
     _tableView.dataSource = self;
+    [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
     [self.view addSubview:_tableView];
     
     _data = @[@"我收藏的板块", @"我收藏的帖子"];
@@ -67,6 +68,11 @@
         default:
             break;
     }
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.tabBarController setTitle:@"个人中心"];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

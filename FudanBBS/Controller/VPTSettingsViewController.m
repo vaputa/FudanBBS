@@ -38,6 +38,11 @@
     [self updateViewConstraints];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.tabBarController setTitle:@"设置"];
+}
+
 - (void)setUpLoginView {
     _username = [UITextField new];
     _password = [UITextField new];

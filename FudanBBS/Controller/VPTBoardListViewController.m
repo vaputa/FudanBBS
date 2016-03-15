@@ -29,7 +29,6 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        [self setTitle:@"所有板块"];
         _boardListViewType = BoardListViewTypeAllSections;
     }
     return self;
@@ -52,6 +51,27 @@
     [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
     [self.view addSubview:_tableView];
     [self updateViewConstraints];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    if (_tableView) {
+        if (_boardListViewType == BoardListViewTypeAllFavouriteBoards) {
+            _boards = [[NSMutableArray alloc] initWithArray:[VPTDataManager getFavouriteBoardList]];
+            [_tableView reloadData];
+        }
+    }
+    if (_boardListViewType == BoardListViewTypeAllSections) {
+        [self.tabBarController setTitle:@"所有板块"];
+    } else if (_boardListViewType == BoardListViewTypeRecommandedBoardsForSection){
+        [self.navigationItem setTitle:_sectionDesc];
+    } else if (_boardListViewType == BoardListViewTypeAllBoardsForSection) {
+        [self.navigationItem setTitle:_sectionDesc];
+    } else if (_boardListViewType == BoardListViewTypeAllFavouriteBoards) {
+        [self.navigationItem setTitle:@"我收藏的板块"];
+    } else if (_boardListViewType == BoardListViewTypeSubdirectoryForSection) {
+        [self.navigationItem setTitle:_boardDesc];
+    }
 }
 
 - (void)updateViewConstraints {
@@ -137,16 +157,6 @@
         return [_sections count];
     } else {
         return [_boards count];
-    }
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    if (_tableView) {
-        if (_boardListViewType == BoardListViewTypeAllFavouriteBoards) {
-            _boards = [[NSMutableArray alloc] initWithArray:[VPTDataManager getFavouriteBoardList]];
-            [_tableView reloadData];
-        }
     }
 }
 
