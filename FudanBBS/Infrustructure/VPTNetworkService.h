@@ -12,7 +12,7 @@
 - (void)receiveData:(NSString *)data;
 @end
 
-@interface NetworkService : NSObject
+@interface VPTNetworkService : NSObject
 
 + (void)request:(NSString *)url delegate:(id<DataReceiveDelegate>)delegate;
 + (void)post:(NSString *)url data:(NSDictionary *)dictionary delegate:(id<DataReceiveDelegate>)delegate;

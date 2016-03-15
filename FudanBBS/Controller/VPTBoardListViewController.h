@@ -7,13 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NetworkService.h"
+#import "VPTNetworkService.h"
 
 @interface VPTBoardListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, DataReceiveDelegate>
 enum BoardListViewType {
     BoardListViewTypeAllSections,
     BoardListViewTypeRecommandedBoardsForSection,
     BoardListViewTypeAllBoardsForSection,
-    BoardListViewTypeSubdirectoryForSection
+    BoardListViewTypeSubdirectoryForSection,
+    BoardListViewTypeAllFavouriteBoards
 };
+
+@property (nonatomic) enum BoardListViewType boardListViewType;
+
 @end

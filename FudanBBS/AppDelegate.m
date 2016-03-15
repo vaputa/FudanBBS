@@ -6,14 +6,16 @@
 //  Copyright © 2016 vaputa. All rights reserved.
 //
 
-#import "AppDelegate.h"
+#import "Ono.h"
 
+#import "AppDelegate.h"
 #import "VPTTopTenViewController.h"
-#import "VPTTopicViewController.h"
 #import "VPTBoardListViewController.h"
-#import "VPTWelcomeViewController.h"
 #import "VPTSettingsViewController.h"
 #import "VPTPersonalViewController.h"
+
+#import "VPTNetworkService.h"
+#import "VPTDataManager.h"
 
 @interface AppDelegate ()
 
@@ -26,6 +28,8 @@
     [self setWindow:[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]]];
     [self.window setBackgroundColor:[UIColor whiteColor]];
     
+    [VPTNetworkService request:@"http://bbs.fudan.edu.cn/bbs/all" delegate:self];
+    
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
     UIViewController *ttvc = [VPTTopTenViewController new];
     UIViewController *bvc = [VPTBoardListViewController new];
@@ -37,6 +41,21 @@
     [self.window setRootViewController:[[UINavigationController alloc] initWithRootViewController:tabBarController]];
     [self.window makeKeyAndVisible];
     return YES;
+}
+
+- (void)receiveData:(NSString *)data {
+    if (data == nil)
+        return ;
+    data = [data stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
+    ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[data dataUsingEncoding:NSUTF8StringEncoding] error:nil];
+    NSMutableArray *boardArray = [NSMutableArray new];
+    NSMutableDictionary *boardDictionary = [NSMutableDictionary new];
+    for (ONOXMLElement *board in [document.rootElement childrenWithTag:@"brd"]){
+        [boardArray addObject:[board attributes]];
+        [boardDictionary setObject:[board attributes] forKey:[board attributes][@"title"]];
+    }
+    [VPTDataManager setAllBoardDictionary:boardDictionary];
+    [VPTDataManager setAllBoardList:boardArray];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NetworkService.h"
+#import "VPTNetworkService.h"
 
 @interface VPTTopicViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, DataReceiveDelegate>
 @property (nonatomic, strong) NSString *gid;

@@ -90,10 +90,12 @@
             [imageView setContentMode:UIViewContentModeScaleAspectFit];
             [_content addSubview:imageView];
             [imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-                make.width.equalTo(_content);
+                make.width.lessThanOrEqualTo(_content);
+                make.width.lessThanOrEqualTo(@([image size].width));
+                make.height.lessThanOrEqualTo(@([image size].height));
+                make.height.lessThanOrEqualTo(@(300));
                 make.centerX.equalTo(_content);
                 make.top.equalTo(last);
-                make.height.lessThanOrEqualTo(@300);
             }];
             last = [imageView mas_bottom];
         }

@@ -19,6 +19,8 @@
 @property (nonatomic, strong) UIButton *prevPage;
 @property (nonatomic, strong) UIButton *nextPage;
 @property (nonatomic, strong) UIView *footerView;
+@property (nonatomic, strong) UIButton *btnFavourite;
+@property (nonatomic) BOOL isFavourite;
 @end
 
 @implementation VPTTopicListViewController
@@ -42,13 +44,31 @@
     if (_topicListViewType == VPTTopicListViewTypeDataFromBoard) {
         _footerView = [self tableFooterView];
         [_tableView setTableFooterView:_footerView];
-        [NetworkService request:[self urlForBoard:_boardId] delegate:self];
+        [VPTNetworkService request:[self urlForBoard:_boardId] delegate:self];
     } else if (_topicListViewType == VPTTopicListViewTypeDataFromFavourite) {
         _topicArray = [[NSMutableArray alloc] initWithArray:[VPTDataManager getFavouriteTopicList]];
     }
-
     [self.view addSubview:_tableView];
+    
+    _isFavourite = [VPTDataManager isFavouriteBoardWithBoardId:_boardId];
+    _btnFavourite = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
+    [_btnFavourite setBackgroundImage:[UIImage imageNamed:_isFavourite ? @"icon_favourite" : @"icon_unfavourite"] forState:UIControlStateNormal];
+    [_btnFavourite addTarget:self action:@selector(toggleFavourite) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithCustomView:_btnFavourite]];
+
     [self updateViewConstraints];
+}
+
+- (void)toggleFavourite {
+    
+    if (_isFavourite) {
+        [VPTDataManager removeFromFavouriteBoardListWithBoardId:_boardId];
+    } else {
+        [VPTDataManager addToFavouriteBoardListWithBoardId:_boardId];
+    }
+    _isFavourite = !_isFavourite;
+    [_btnFavourite setBackgroundImage:[UIImage imageNamed:_isFavourite ? @"icon_favourite" : @"icon_unfavourite"] forState:UIControlStateNormal];
 }
 
 - (void)updateViewConstraints {
@@ -103,11 +123,11 @@
 }
 
 - (void)goToPrevPage {
-    [NetworkService request:[self urlForPrevPageWithBoard:_boardId start:_boardStart - 20] delegate:self];
+    [VPTNetworkService request:[self urlForPrevPageWithBoard:_boardId start:_boardStart - 20] delegate:self];
 }
 
 - (void)goToNextPage {
-    [NetworkService request:[self urlForNextPageWithBoard:_boardId start:_boardStart + 20] delegate:self];
+    [VPTNetworkService request:[self urlForNextPageWithBoard:_boardId start:_boardStart + 20] delegate:self];
 }
 
 - (NSString *)urlForBoard:(NSString *)board {
@@ -128,16 +148,17 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"TOPTenCell"];
-    NSDictionary *topic = [_topicArray objectAtIndex:indexPath.row];
-    [cell.textLabel setText:[topic objectForKey:@"title"]];
+    NSDictionary *cellInfo = [_topicArray objectAtIndex:indexPath.row];
+    [cell.textLabel setText:[cellInfo objectForKey:@"title"]];
     
     if (_topicListViewType == VPTTopicListViewTypeDataFromBoard) {
-        [cell.detailTextLabel setText:[topic objectForKey:@"board"]];
-        if (topic[@"attributes"][@"sticky"] != nil) {
+        [cell.detailTextLabel setText:[cellInfo objectForKey:@"board"]];
+        if (cellInfo[@"attributes"][@"sticky"] != nil) {
             [cell setBackgroundColor: [UIColor colorWithRed:0.2 green:0.2 blue:0.5 alpha:0.5]];
         }
     } else if (_topicListViewType ==VPTTopicListViewTypeDataFromFavourite) {
-        [cell.detailTextLabel setText:[topic objectForKey:@"boardName"]];
+        NSString *boardId = [cellInfo objectForKey:@"boardId"];
+        [cell.detailTextLabel setText:[VPTDataManager getAllBoardDictionary][boardId][@"desc"]];
     }
     return cell;
 }

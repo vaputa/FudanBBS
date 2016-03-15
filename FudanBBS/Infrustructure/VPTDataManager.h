@@ -9,6 +9,20 @@
 #import <Foundation/Foundation.h>
 
 @interface VPTDataManager : NSObject
+
 + (NSArray *)getFavouriteTopicList;
-+ (BOOL)AddToFavouriteTopicListWithBoardName:(NSString *)boardName boardId:_boardId topicId:(NSString *)topicId title:(NSString *)title;
++ (BOOL)addToFavouriteTopicListWithBoardName:(NSString *)boardName boardId:(NSString *)_boardId topicId:(NSString *)topicId title:(NSString *)title;
++ (BOOL)removeFromFavouriteTopicListWithBoardName:(NSString *)boardName boardId:(NSString *)boardId topicId:(NSString *)topicId;
++ (BOOL)isFavouriteTopicWithBoardId:(NSString *)boardId topicId:(NSString *)topicId;
+
++ (NSArray *)getFavouriteBoardList;
++ (BOOL)addToFavouriteBoardListWithBoardId:(NSString *)boardId;
++ (BOOL)removeFromFavouriteBoardListWithBoardId:(NSString *)boardId;
++ (BOOL)isFavouriteBoardWithBoardId:(NSString *)boardId;
+
++ (NSArray *)getAllBoardList;
++ (NSDictionary *)getAllBoardDictionary;
++ (BOOL)setAllBoardList:(NSArray *)boardList;
++ (BOOL)setAllBoardDictionary:(NSDictionary *)boardDictionary;
+
 @end

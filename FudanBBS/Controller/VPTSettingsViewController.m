@@ -8,7 +8,7 @@
 
 #import "VPTSettingsViewController.h"
 #import "Masonry/Masonry.h"
-#import "NetworkService.h"
+#import "VPTNetworkService.h"
 
 @interface VPTSettingsViewController ()
 @property (nonatomic, strong) UITableView *tableView;
@@ -103,7 +103,7 @@
     }];
 }
 - (void)login {
-    [NetworkService post:@"http://bbs.fudan.edu.cn/bbs/login" data:@{
+    [VPTNetworkService post:@"http://bbs.fudan.edu.cn/bbs/login" data:@{
                                                                      @"username": _username.text,
                                                                      @"password": _password.text
                                                                      } delegate:nil];

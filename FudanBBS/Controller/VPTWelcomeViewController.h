@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NetworkService.h"
+#import "VPTNetworkService.h"
 
-@interface VPTWelcomeViewController : UIViewController<DataReceiveDelegate>
+@interface VPTWelcomeViewController : UIViewController
 @end

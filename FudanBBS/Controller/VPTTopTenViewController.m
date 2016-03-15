@@ -9,12 +9,14 @@
 #import "Masonry/Masonry.h"
 #import "Ono.h"
 #import "ReactiveCocoa/ReactiveCocoa.h"
+
 #import "VPTTopTenViewController.h"
 #import "VPTTopicViewController.h"
+#import "VPTDataManager.h"
 
 @interface VPTTopTenViewController ()
 @property (strong) UITableView *tableView;
-@property (strong) NSMutableArray *newsArray;
+@property (strong) NSMutableArray *topicArray;
 @end
 
 @implementation VPTTopTenViewController
@@ -36,9 +38,9 @@
     [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
     [self.view addSubview:_tableView];
 
-    _newsArray = [[NSMutableArray alloc] init];
+    _topicArray = [[NSMutableArray alloc] init];
     
-    [NetworkService request:@"http://bbs.fudan.edu.cn/bbs/top10" delegate:self];
+    [VPTNetworkService request:@"http://bbs.fudan.edu.cn/bbs/top10" delegate:self];
     [self updateViewConstraints];
 }
 
@@ -53,15 +55,15 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
-    NSInteger row = indexPath.row;
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"TOPTenCell"];
-    [cell.textLabel setText:_newsArray[row][@"title"]];
-    [cell.detailTextLabel setText:_newsArray[row][@"attributes"][@"board"]];
+    NSDictionary *cellInfo = _topicArray[indexPath.row];
+    [cell.textLabel setText:cellInfo[@"title"]];
+    [cell.detailTextLabel setText:[[VPTDataManager getAllBoardDictionary] objectForKey:cellInfo[@"attributes"][@"board"]][@"desc"]];
     return cell;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [_newsArray count];
+    return [_topicArray count];
 }
 
 - (void)receiveData:(NSString *)data{
@@ -69,10 +71,10 @@
     ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[data dataUsingEncoding:NSUTF8StringEncoding] error:nil];
     for (ONOXMLElement *element in [document.rootElement children]){
         if ([@"top" isEqualToString:[element tag]]){
-            [_newsArray addObject:@{
-                                    @"title":[[element stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                                    @"attributes":[element attributes],
-                                    }
+            [_topicArray addObject:@{
+                                     @"title":[[element stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                     @"attributes":[element attributes],
+                                     }
              ];
         }
     }
@@ -81,12 +83,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    NSDictionary *dict = [_newsArray objectAtIndex:indexPath.row];
+    NSDictionary *cellInfo = [_topicArray objectAtIndex:indexPath.row];
     [cell setSelected:NO];
     VPTTopicViewController *tvc = [[VPTTopicViewController alloc] init];
-    [tvc setGid:dict[@"attributes"][@"gid"]];
-    [tvc setBoardId:dict[@"attributes"][@"board"]];
-    [tvc setPostTitle:dict[@"title"]];
+    [tvc setGid:cellInfo[@"attributes"][@"gid"]];
+    [tvc setBoardId:cellInfo[@"attributes"][@"board"]];
+    [tvc setPostTitle:cellInfo[@"title"]];
     [self.navigationController pushViewController:tvc animated:YES];
 }
 

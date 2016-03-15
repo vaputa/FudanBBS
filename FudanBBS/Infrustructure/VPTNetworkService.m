@@ -6,14 +6,15 @@
 //  Copyright © 2016 vaputa. All rights reserved.
 //
 
-#import "NetworkService.h"
 #import "AFNetworking.h"
 #import "Ono.h"
 
-@interface NetworkService ()
+#import "VPTNetworkService.h"
+
+@interface VPTNetworkService ()
 @end
 
-@implementation NetworkService
+@implementation VPTNetworkService
 
 + (AFURLSessionManager *)getSessionManager {
     static AFURLSessionManager *manager;
@@ -26,7 +27,7 @@
 }
 
 + (void)request:(NSString *)urlString delegate:(id<DataReceiveDelegate>)delegate{
-    AFURLSessionManager *manager = [NetworkService getSessionManager];
+    AFURLSessionManager *manager = [VPTNetworkService getSessionManager];
     NSURL *URL = [NSURL URLWithString:urlString];
     NSURLRequest *request = [NSURLRequest requestWithURL:URL];
     NSURLSessionDataTask *downloadTask = [manager dataTaskWithRequest:request
@@ -39,7 +40,7 @@
 }
 
 + (void)post:(NSString *)urlString data:(NSDictionary *)dictionary delegate:(id<DataReceiveDelegate>)delegate{
-    AFURLSessionManager *manager = [NetworkService getSessionManager];
+    AFURLSessionManager *manager = [VPTNetworkService getSessionManager];
     NSURL *URL = [NSURL URLWithString:urlString];
     NSData *data = [[[NSString alloc] initWithFormat:@"id=%@&pw=%@", dictionary[@"username"], dictionary[@"password"]] dataUsingEncoding:NSUTF8StringEncoding];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:URL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];

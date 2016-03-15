@@ -9,6 +9,7 @@
 #import "Masonry/Masonry.h"
 #import "VPTPersonalViewController.h"
 #import "VPTTopicListViewController.h"
+#import "VPTBoardListViewController.h"
 
 @interface VPTPersonalViewController ()
 @property (nonatomic, strong) UITableView *tableView;
@@ -51,8 +52,12 @@
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setSelected:NO animated:YES];
     switch (indexPath.row) {
-        case 0:
+        case 0: {
+            VPTBoardListViewController *blvc = [VPTBoardListViewController new];
+            [blvc setBoardListViewType:BoardListViewTypeAllFavouriteBoards];
+            [self.navigationController pushViewController:blvc animated:YES];
             break;
+        }
         case 1: {
             VPTTopicListViewController *tlvc = [VPTTopicListViewController new];
             [tlvc setTopicListViewType:VPTTopicListViewTypeDataFromFavourite];

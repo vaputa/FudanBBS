@@ -15,12 +15,15 @@
 
 @interface VPTTopicViewController ()
 @property (nonatomic) BOOL showQuote;
+@property (nonatomic) BOOL isFavourite;
 @property (nonatomic, strong) UILabel *label;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *newsArray;
 @property (nonatomic, strong) UIView *footerView;
 @property (nonatomic, strong) UIButton *prevPage;
 @property (nonatomic, strong) UIButton *nextPage;
+@property (nonatomic, strong) UIButton *btnFavourite;
+@property (nonatomic, strong) UIButton *btnQuote;
 @end
 
 @implementation VPTTopicViewController
@@ -28,7 +31,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [NetworkService request:[self url] delegate:self];
+    [VPTNetworkService request:[self url] delegate:self];
     
     _tableView = [[UITableView alloc] init];
     [_tableView setDelegate:self];
@@ -46,22 +49,38 @@
         [_tableView setLayoutMargins:UIEdgeInsetsZero];
     }
     _showQuote = YES;
+    _isFavourite = [VPTDataManager isFavouriteTopicWithBoardId:_boardId topicId:_gid];
+    
+    _btnQuote = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
+    [_btnQuote setBackgroundImage:[UIImage imageNamed:@"icon_quote"] forState:UIControlStateNormal];
+    [_btnQuote addTarget:self action:@selector(toggleQuote) forControlEvents:UIControlEventTouchUpInside];
+    
+    _btnFavourite = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
+    [_btnFavourite setBackgroundImage:[UIImage imageNamed:_isFavourite ? @"icon_favourite" : @"icon_unfavourite"] forState:UIControlStateNormal];
+    [_btnFavourite addTarget:self action:@selector(toggleFavourite) forControlEvents:UIControlEventTouchUpInside];
+
     self.navigationItem.rightBarButtonItems = @[
-                                               [[UIBarButtonItem alloc] initWithTitle:@"Q"
-                                                                                style:UIBarButtonItemStylePlain
-                                                                               target:self
-                                                                               action:@selector(toggleQuote)],
-                                               [[UIBarButtonItem alloc] initWithTitle:@"F"
-                                                                                style:UIBarButtonItemStylePlain
-                                                                               target:self
-                                                                               action:@selector(toggleFavourite)]
+                                                [[UIBarButtonItem alloc] initWithCustomView:_btnQuote],
+                                                [[UIBarButtonItem alloc] initWithCustomView:_btnFavourite],
                                                ];
     [self.view addSubview:_tableView];
     [self updateViewConstraints];
 }
 
 - (void)toggleFavourite {
-    [VPTDataManager AddToFavouriteTopicListWithBoardName:_boardName boardId:_boardId topicId:_gid title:_postTitle];
+    if (_isFavourite) {
+        [VPTDataManager removeFromFavouriteTopicListWithBoardName:_boardName boardId:_boardId topicId:_gid];
+    } else {
+        [VPTDataManager addToFavouriteTopicListWithBoardName:_boardName boardId:_boardId topicId:_gid title:_postTitle];
+    }
+    _isFavourite = !_isFavourite;
+    [_btnFavourite setBackgroundImage:[UIImage imageNamed:_isFavourite ? @"icon_favourite" : @"icon_unfavourite"] forState:UIControlStateNormal];
+}
+
+- (void)toggleQuote {
+    _showQuote = !_showQuote;
+    [_btnQuote setBackgroundImage:[UIImage imageNamed:_showQuote ? @"icon_quote" : @"icon_unquote"] forState:UIControlStateNormal];
+    [_tableView reloadData];
 }
 
 - (UIView *)tableHeaderView {
@@ -115,10 +134,10 @@
 }
 
 - (void)goToNextPage {
-    [NetworkService request:[self urlForNextPageWithBoard:_boardId gid:_gid fid:[_newsArray lastObject][@"attributes"][@"fid"]] delegate:self];
+    [VPTNetworkService request:[self urlForNextPageWithBoard:_boardId gid:_gid fid:[_newsArray lastObject][@"attributes"][@"fid"]] delegate:self];
 }
 - (void)goToPrevPage {
-    [NetworkService request:[self urlForPreviousPageWithBoard:_boardId gid:_gid fid:[_newsArray firstObject][@"attributes"][@"fid"]] delegate:self];
+    [VPTNetworkService request:[self urlForPreviousPageWithBoard:_boardId gid:_gid fid:[_newsArray firstObject][@"attributes"][@"fid"]] delegate:self];
 }
 
 - (NSString *)url {
@@ -180,11 +199,6 @@
         make.centerX.equalTo(self.view);
         make.height.equalTo(self.view);
     }];
-}
-
-- (void)toggleQuote {
-    _showQuote = !_showQuote;
-    [_tableView reloadData];
 }
 
 - (void)receiveData:(NSString *)data {

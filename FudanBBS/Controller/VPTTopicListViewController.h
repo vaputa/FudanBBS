@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NetworkService.h"
+#import "VPTNetworkService.h"
 
 @interface VPTTopicListViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, DataReceiveDelegate>
 @property (nonatomic) enum VPTTopicListViewType topicListViewType;

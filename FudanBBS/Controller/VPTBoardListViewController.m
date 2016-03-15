@@ -6,11 +6,12 @@
 //  Copyright © 2016 vaputa. All rights reserved.
 //
 
-#import "VPTBoardListViewController.h"
-#import "VPTTopicListViewController.h"
 #import "Masonry/Masonry.h"
 #import "Ono.h"
 
+#import "VPTBoardListViewController.h"
+#import "VPTTopicListViewController.h"
+#import "VPTDataManager.h"
 
 @interface VPTBoardListViewController ()
 @property (nonatomic, strong) UITableView *tableView;
@@ -20,7 +21,6 @@
 @property (nonatomic, strong) NSString *boardDesc;
 @property (nonatomic, strong) NSString *sectionId;
 @property (nonatomic, strong) NSString *sectionDesc;
-@property (nonatomic) enum BoardListViewType boardListViewType;
 @end
 
 @implementation VPTBoardListViewController
@@ -38,11 +38,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     if (_boardListViewType == BoardListViewTypeAllSections) {
-        [NetworkService request:@"http://bbs.fudan.edu.cn/bbs/sec" delegate:self];
+        [VPTNetworkService request:@"http://bbs.fudan.edu.cn/bbs/sec" delegate:self];
     } else if (_boardListViewType == BoardListViewTypeAllBoardsForSection) {
-        [NetworkService request:[NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/boa?s=%@", _sectionId] delegate:self];
+        [VPTNetworkService request:[NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/boa?s=%@", _sectionId] delegate:self];
     } else if (_boardListViewType == BoardListViewTypeSubdirectoryForSection) {
-        [NetworkService request:[NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/boa?board=%@", _boardId] delegate:self];
+        [VPTNetworkService request:[NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/boa?board=%@", _boardId] delegate:self];
+    } else if (_boardListViewType == BoardListViewTypeAllFavouriteBoards) {
+        _boards = [[NSMutableArray alloc] initWithArray:[VPTDataManager getFavouriteBoardList]];
     }
     _tableView = [[UITableView alloc] init];
     [_tableView setDelegate:self];
@@ -61,7 +63,10 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"VPTBoardViewCell"];
-    if (_boardListViewType == BoardListViewTypeAllSections) {
+    
+    if (_boardListViewType == BoardListViewTypeAllFavouriteBoards) {
+        [cell.textLabel setText:[VPTDataManager getAllBoardDictionary][_boards[indexPath.row][@"boardId"]][@"desc"]];
+    } else if (_boardListViewType == BoardListViewTypeAllSections) {
         [cell.textLabel setText:[[[_sections objectAtIndex:indexPath.row] objectForKey:@"section"] objectForKey:@"desc"]];
     } else {
         [cell.textLabel setText:[[_boards objectAtIndex:indexPath.row] objectForKey:@"desc"]];
@@ -82,7 +87,13 @@
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setSelected:NO];
     NSUInteger row = indexPath.row;
-    if (_boardListViewType == BoardListViewTypeAllSections) {
+    if (_boardListViewType ==BoardListViewTypeAllFavouriteBoards) {
+        NSDictionary *cellInfo = [VPTDataManager getAllBoardDictionary][_boards[indexPath.row][@"boardId"]];
+        VPTTopicListViewController *tlvc = [VPTTopicListViewController new];
+        [tlvc setBoardId:cellInfo[@"title"]];
+        [tlvc setBoardName:cellInfo[@"desc"]];
+        [self.navigationController pushViewController:tlvc animated:YES];
+    } if (_boardListViewType == BoardListViewTypeAllSections) {
         VPTBoardListViewController *bvc = [VPTBoardListViewController new];
         NSDictionary *dictionary = [_sections objectAtIndex:row];
         [bvc setBoards:dictionary[@"boards"]];
@@ -120,10 +131,22 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (_boardListViewType == BoardListViewTypeAllSections) {
+    if (_boardListViewType == BoardListViewTypeAllFavouriteBoards) {
+        return [_boards count];
+    } else if (_boardListViewType == BoardListViewTypeAllSections) {
         return [_sections count];
     } else {
         return [_boards count];
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    if (_tableView) {
+        if (_boardListViewType == BoardListViewTypeAllFavouriteBoards) {
+            _boards = [[NSMutableArray alloc] initWithArray:[VPTDataManager getFavouriteBoardList]];
+            [_tableView reloadData];
+        }
     }
 }
 

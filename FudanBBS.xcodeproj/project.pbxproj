@@ -18,7 +18,7 @@
 		35D443C71C847019001B4D02 /* FudanBBSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D443C61C847019001B4D02 /* FudanBBSTests.m */; };
 		35D443D21C847019001B4D02 /* FudanBBSUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D443D11C847019001B4D02 /* FudanBBSUITests.m */; };
 		35D443E71C84719F001B4D02 /* VPTWelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D443E61C84719F001B4D02 /* VPTWelcomeViewController.m */; };
-		35D443EB1C8474FA001B4D02 /* NetworkService.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D443EA1C8474FA001B4D02 /* NetworkService.m */; };
+		35D443EB1C8474FA001B4D02 /* VPTNetworkService.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D443EA1C8474FA001B4D02 /* VPTNetworkService.m */; };
 		35D443EE1C847617001B4D02 /* VPTTopTenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D443ED1C847617001B4D02 /* VPTTopTenViewController.m */; };
 		35DE57711C93AD700029511F /* VPTSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35DE57701C93AD700029511F /* VPTSettingsViewController.m */; };
 		35F1EDA21C95307A00878E71 /* VPTDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 35F1EDA11C95307A00878E71 /* VPTDataManager.m */; };
@@ -69,8 +69,8 @@
 		35D443D31C847019001B4D02 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		35D443E51C84719F001B4D02 /* VPTWelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTWelcomeViewController.h; path = Controller/VPTWelcomeViewController.h; sourceTree = "<group>"; };
 		35D443E61C84719F001B4D02 /* VPTWelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTWelcomeViewController.m; path = Controller/VPTWelcomeViewController.m; sourceTree = "<group>"; };
-		35D443E91C8474FA001B4D02 /* NetworkService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkService.h; path = Infrustructure/NetworkService.h; sourceTree = "<group>"; };
-		35D443EA1C8474FA001B4D02 /* NetworkService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkService.m; path = Infrustructure/NetworkService.m; sourceTree = "<group>"; };
+		35D443E91C8474FA001B4D02 /* VPTNetworkService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTNetworkService.h; path = Infrustructure/VPTNetworkService.h; sourceTree = "<group>"; };
+		35D443EA1C8474FA001B4D02 /* VPTNetworkService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTNetworkService.m; path = Infrustructure/VPTNetworkService.m; sourceTree = "<group>"; };
 		35D443EC1C847617001B4D02 /* VPTTopTenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTTopTenViewController.h; path = Controller/VPTTopTenViewController.h; sourceTree = "<group>"; };
 		35D443ED1C847617001B4D02 /* VPTTopTenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTTopTenViewController.m; path = Controller/VPTTopTenViewController.m; sourceTree = "<group>"; };
 		35DE576F1C93AD700029511F /* VPTSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTSettingsViewController.h; path = Controller/VPTSettingsViewController.h; sourceTree = "<group>"; };
@@ -205,8 +205,8 @@
 		35D443E81C847490001B4D02 /* Infrustructure */ = {
 			isa = PBXGroup;
 			children = (
-				35D443E91C8474FA001B4D02 /* NetworkService.h */,
-				35D443EA1C8474FA001B4D02 /* NetworkService.m */,
+				35D443E91C8474FA001B4D02 /* VPTNetworkService.h */,
+				35D443EA1C8474FA001B4D02 /* VPTNetworkService.m */,
 				35F1EDA01C95307A00878E71 /* VPTDataManager.h */,
 				35F1EDA11C95307A00878E71 /* VPTDataManager.m */,
 			);
@@ -419,7 +419,7 @@
 				35942B0A1C89F1BE00CD8BE6 /* VPTPostTableViewCell.m in Sources */,
 				351719EE1C8C123400DA1E07 /* VPTBoardListViewController.m in Sources */,
 				357EFE351C87307F009B297C /* VPTTopicViewController.m in Sources */,
-				35D443EB1C8474FA001B4D02 /* NetworkService.m in Sources */,
+				35D443EB1C8474FA001B4D02 /* VPTNetworkService.m in Sources */,
 				35D443AE1C847019001B4D02 /* main.m in Sources */,
 				35F1EDA51C95362800878E71 /* VPTPersonalViewController.m in Sources */,
 			);
