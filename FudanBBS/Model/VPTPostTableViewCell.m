@@ -5,6 +5,8 @@
 //  Created by leon on 3/5/16.
 //  Copyright © 2016 vaputa. All rights reserved.
 //
+#import <SDWebImage/UIImageView+WebCache.h>
+#import <ReactiveCocoa/ReactiveCocoa.h>
 
 #import "VPTPostTableViewCell.h"
 #import "Masonry/Masonry.h"
@@ -66,8 +68,9 @@
 }
 
 
-- (void)buildContent:(NSMutableArray *)content {
+- (void)buildContent:(NSMutableArray *)content withReload:(BOOL)reload {
     MASViewAttribute* last = [_content mas_top];
+    NSMutableArray *imageLoader = [NSMutableArray new];
     for (NSDictionary *para in content) {
         if ([[para objectForKey:@"type"] isEqualToString:@"text"]) {
             UILabel *label = [UILabel new];
@@ -84,26 +87,67 @@
             last = [label mas_bottom];
         } else if ([[para objectForKey:@"type"] isEqualToString:@"image"]) {
             NSURL *url = [NSURL URLWithString:[para objectForKey:@"href"]];
-            NSData *data = [NSData dataWithContentsOfURL:url];
-            UIImage *image = [UIImage imageWithData:data];
-            UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-            [imageView setContentMode:UIViewContentModeScaleAspectFit];
+            UIImageView *imageView = [[UIImageView alloc] init];
             [_content addSubview:imageView];
-            [imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            [imageView setContentMode:UIViewContentModeScaleAspectFit];
+            if ([_imageDictionary objectForKey:url]) {
+                UIImage *image = [_imageDictionary objectForKey:url];
+                [imageView setImage:image];
+                [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+                    make.width.lessThanOrEqualTo(@(image.size.width));
+                    make.height.lessThanOrEqualTo(@(image.size.height));
+                    make.height.lessThanOrEqualTo(@(image.size.height / image.size.width * ([UIScreen mainScreen].bounds.size.width - 20)));
+                }];
+            } else {
+                [imageLoader addObject:[RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+                    [imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"icon_hot_selected"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                        @synchronized(_imageDictionary) {
+                            [_imageDictionary setObject:image forKey:url];
+                        }
+                        [subscriber sendCompleted];
+                    }];
+                    return nil;
+                }]];
+            }
+            [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.width.lessThanOrEqualTo(_content);
-                make.width.lessThanOrEqualTo(@([image size].width));
-                make.height.lessThanOrEqualTo(@([image size].height));
-                make.height.lessThanOrEqualTo(@(300));
                 make.centerX.equalTo(_content);
                 make.top.equalTo(last);
             }];
             last = [imageView mas_bottom];
         }
     }
+    if (![_finishSet containsObject:_indexPath]) {
+        if ([imageLoader count] > 0) {
+            [[RACSignal combineLatest:imageLoader] subscribeCompleted:^{
+                if (reload && ![_finishSet containsObject:_indexPath]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [_tableView beginUpdates];
+                        [_tableView reloadRowsAtIndexPaths:@[_indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                        [_tableView endUpdates];
+                    });
+                }
+            }];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_tableView beginUpdates];
+                [_tableView reloadRowsAtIndexPaths:@[_indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                [_tableView endUpdates];
+            });
+            @synchronized(_finishSet) {
+                [_finishSet addObject:_indexPath];
+            }
+        }
+    }
     [_content mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(last);
     }];
     [_content sizeToFit];
+}
+
+- (void)layoutSubviews{
+    [super layoutSubviews];
+    
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

@@ -24,6 +24,9 @@
 @property (nonatomic, strong) UIButton *nextPage;
 @property (nonatomic, strong) UIButton *btnFavourite;
 @property (nonatomic, strong) UIButton *btnQuote;
+@property (nonatomic, strong) NSMutableDictionary *imageDirectory;
+@property (nonatomic, strong) NSMutableSet *finishSet;
+
 @end
 
 @implementation VPTTopicViewController
@@ -32,7 +35,9 @@
     [super viewDidLoad];
     
     [VPTNetworkService request:[self url] delegate:self];
-    
+    _imageDirectory = [NSMutableDictionary new];
+    _finishSet = [NSMutableSet new];
+
     _tableView = [[UITableView alloc] init];
     [_tableView setDelegate:self];
     [_tableView setDataSource:self];
@@ -155,9 +160,13 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
     VPTPostTableViewCell *cell = [[VPTPostTableViewCell alloc] init];
+    [cell setTableView:_tableView];
+    [cell setIndexPath:indexPath];
+    [cell setFinishSet:_finishSet];
+    [cell setImageDictionary:_imageDirectory];
     [cell.date setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"date"]];
     [cell.user setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"nick"]];
-    [cell buildContent:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"content"]];
+    [cell buildContent:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"content"] withReload:YES];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     if (_showQuote) {
         [cell.reply setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"reply"]];
@@ -173,9 +182,13 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     VPTPostTableViewCell *cell = [[VPTPostTableViewCell alloc] init];
+    [cell setTableView:_tableView];
+    [cell setIndexPath:indexPath];
+    [cell setFinishSet:_finishSet];
+    [cell setImageDictionary:_imageDirectory];
     [cell.date setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"date"]];
     [cell.user setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"nick"]];
-    [cell buildContent:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"content"]];
+    [cell buildContent:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"content"] withReload:NO];
     if (_showQuote) {
         [cell.reply setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"reply"]];
     }
@@ -184,7 +197,6 @@
     [cell setNeedsLayout];
     [cell layoutIfNeeded];
     return [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
-
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{

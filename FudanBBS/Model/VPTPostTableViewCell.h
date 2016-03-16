@@ -13,7 +13,10 @@
 @property (nonatomic, strong) UILabel *reply;
 @property (nonatomic, strong) UILabel *user;
 @property (nonatomic, strong) UIView *content;
-
-- (void)buildContent:(NSMutableArray *)content;
+@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) NSIndexPath *indexPath;
+@property (nonatomic, strong) NSMutableSet *finishSet;
+@property (nonatomic, strong) NSMutableDictionary *imageDictionary;
+- (void)buildContent:(NSMutableArray *)content withReload:(BOOL)reload;
 
 @end

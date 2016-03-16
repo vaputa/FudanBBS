@@ -184,6 +184,9 @@
                 [_boards addObject:[boardEle attributes]];
             }
         }
+        [_boards sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+            return -[[obj1 objectForKey:@"dir"] compare:[obj2 objectForKey:@"dir"]];
+        }];
     }
     [_tableView reloadData];
         
