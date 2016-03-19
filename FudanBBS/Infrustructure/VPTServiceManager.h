@@ -1,5 +1,5 @@
 //
-//  VPTDataManager.h
+//  VPTServiceManager.h
 //  FudanBBS
 //
 //  Created by leon on 3/13/16.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface VPTDataManager : NSObject
+@interface VPTServiceManager : NSObject
 
 + (NSArray *)getFavouriteTopicList;
 + (BOOL)addToFavouriteTopicListWithBoardName:(NSString *)boardName boardId:(NSString *)_boardId topicId:(NSString *)topicId title:(NSString *)title;
@@ -24,5 +24,8 @@
 + (NSDictionary *)getAllBoardDictionary;
 + (BOOL)setAllBoardList:(NSArray *)boardList;
 + (BOOL)setAllBoardDictionary:(NSDictionary *)boardDictionary;
+
++ (NSDictionary *)getUserInformation;
++ (BOOL)setUserInformation:(NSDictionary *)userInformation;
 
 @end

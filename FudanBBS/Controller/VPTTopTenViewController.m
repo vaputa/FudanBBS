@@ -12,7 +12,7 @@
 
 #import "VPTTopTenViewController.h"
 #import "VPTTopicViewController.h"
-#import "VPTDataManager.h"
+#import "VPTServiceManager.h"
 
 @interface VPTTopTenViewController ()
 @property (strong) UITableView *tableView;
@@ -62,7 +62,7 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"TOPTenCell"];
     NSDictionary *cellInfo = _topicArray[indexPath.row];
     [cell.textLabel setText:cellInfo[@"title"]];
-    [cell.detailTextLabel setText:[[VPTDataManager getAllBoardDictionary] objectForKey:cellInfo[@"attributes"][@"board"]][@"desc"]];
+    [cell.detailTextLabel setText:[[VPTServiceManager getAllBoardDictionary] objectForKey:cellInfo[@"attributes"][@"board"]][@"desc"]];
     return cell;
 }
 

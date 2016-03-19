@@ -15,7 +15,7 @@
 #import "VPTPersonalViewController.h"
 
 #import "VPTNetworkService.h"
-#import "VPTDataManager.h"
+#import "VPTServiceManager.h"
 
 @interface AppDelegate ()
 
@@ -58,8 +58,8 @@
         [boardArray addObject:[board attributes]];
         [boardDictionary setObject:[board attributes] forKey:[board attributes][@"title"]];
     }
-    [VPTDataManager setAllBoardDictionary:boardDictionary];
-    [VPTDataManager setAllBoardList:boardArray];
+    [VPTServiceManager setAllBoardDictionary:boardDictionary];
+    [VPTServiceManager setAllBoardList:boardArray];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

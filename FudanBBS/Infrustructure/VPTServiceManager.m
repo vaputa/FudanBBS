@@ -1,17 +1,17 @@
 //
-//  VPTDataManager.m
+//  VPTServiceManager.m
 //  FudanBBS
 //
 //  Created by leon on 3/13/16.
 //  Copyright © 2016 vaputa. All rights reserved.
 //
 
-#import "VPTDataManager.h"
+#import "VPTServiceManager.h"
 
-@interface VPTDataManager()
+@interface VPTServiceManager()
 @end
 
-@implementation VPTDataManager
+@implementation VPTServiceManager
 
 static NSDictionary *boardDictionary;
 static NSArray *boardArray;
@@ -36,7 +36,7 @@ static NSArray *boardArray;
 }
 
 + (BOOL)addToFavouriteTopicListWithBoardName:(NSString *)boardName boardId:(NSString *)boardId topicId:(NSString *)topicId title:(NSString *)title {
-    if ([VPTDataManager isFavouriteTopicWithBoardId:boardId topicId:topicId]) {
+    if ([VPTServiceManager isFavouriteTopicWithBoardId:boardId topicId:topicId]) {
         return YES;
     }
     NSUserDefaults *storage = [self defaultStorage];
@@ -155,6 +155,18 @@ static NSArray *boardArray;
     return YES;
 }
 
+
++ (NSDictionary *)getUserInformation {
+    return [[self defaultStorage] objectForKey:@"userInformation"];
+}
+
++ (BOOL)setUserInformation:(NSDictionary *)userInformation {
+    NSUserDefaults *storage = [self defaultStorage];
+    [storage setObject:userInformation forKey:@"userInformation"];
+    [storage synchronize];
+    return YES;
+}
+
 + (NSUserDefaults *)defaultStorage {
     static NSUserDefaults *storage;
     if (storage == nil) {
@@ -165,10 +177,12 @@ static NSArray *boardArray;
         if ([storage objectForKey:@"favouriteBoards"] == nil) {
             [storage setObject:[NSMutableArray new] forKey:@"favouriteBoards"];
         }
+        if ([storage objectForKey:@"userInformation"] == nil) {
+            [storage setObject:[NSMutableDictionary new] forKey:@"userInformation"];
+        }
         [storage synchronize];
     }
     return storage;
 }
-
 
 @end

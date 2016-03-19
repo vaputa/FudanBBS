@@ -11,7 +11,7 @@
 
 #import "VPTTopicViewController.h"
 #import "VPTPostTableViewCell.h"
-#import "VPTDataManager.h"
+#import "VPTServiceManager.h"
 
 @interface VPTTopicViewController ()
 @property (nonatomic) BOOL showQuote;
@@ -54,7 +54,7 @@
         [_tableView setLayoutMargins:UIEdgeInsetsZero];
     }
     _showQuote = YES;
-    _isFavourite = [VPTDataManager isFavouriteTopicWithBoardId:_boardId topicId:_gid];
+    _isFavourite = [VPTServiceManager isFavouriteTopicWithBoardId:_boardId topicId:_gid];
     
     _btnQuote = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
     [_btnQuote setBackgroundImage:[UIImage imageNamed:@"icon_quote"] forState:UIControlStateNormal];
@@ -74,9 +74,9 @@
 
 - (void)toggleFavourite {
     if (_isFavourite) {
-        [VPTDataManager removeFromFavouriteTopicListWithBoardName:_boardName boardId:_boardId topicId:_gid];
+        [VPTServiceManager removeFromFavouriteTopicListWithBoardName:_boardName boardId:_boardId topicId:_gid];
     } else {
-        [VPTDataManager addToFavouriteTopicListWithBoardName:_boardName boardId:_boardId topicId:_gid title:_postTitle];
+        [VPTServiceManager addToFavouriteTopicListWithBoardName:_boardName boardId:_boardId topicId:_gid title:_postTitle];
     }
     _isFavourite = !_isFavourite;
     [_btnFavourite setBackgroundImage:[UIImage imageNamed:_isFavourite ? @"icon_favourite" : @"icon_unfavourite"] forState:UIControlStateNormal];

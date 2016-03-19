@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface VPTSettingsViewController : UIViewController <UITextFieldDelegate>
+#import "VPTNetworkService.h"
+
+@interface VPTSettingsViewController : UIViewController <UITextFieldDelegate, DataReceiveDelegate>
 
 @end

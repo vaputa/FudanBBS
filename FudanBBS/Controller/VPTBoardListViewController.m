@@ -11,7 +11,7 @@
 
 #import "VPTBoardListViewController.h"
 #import "VPTTopicListViewController.h"
-#import "VPTDataManager.h"
+#import "VPTServiceManager.h"
 
 @interface VPTBoardListViewController ()
 @property (nonatomic, strong) UITableView *tableView;
@@ -43,7 +43,7 @@
     } else if (_boardListViewType == BoardListViewTypeSubdirectoryForSection) {
         [VPTNetworkService request:[NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/boa?board=%@", _boardId] delegate:self];
     } else if (_boardListViewType == BoardListViewTypeAllFavouriteBoards) {
-        _boards = [[NSMutableArray alloc] initWithArray:[VPTDataManager getFavouriteBoardList]];
+        _boards = [[NSMutableArray alloc] initWithArray:[VPTServiceManager getFavouriteBoardList]];
     }
     _tableView = [[UITableView alloc] init];
     [_tableView setDelegate:self];
@@ -57,7 +57,7 @@
     [super viewWillAppear:animated];
     if (_tableView) {
         if (_boardListViewType == BoardListViewTypeAllFavouriteBoards) {
-            _boards = [[NSMutableArray alloc] initWithArray:[VPTDataManager getFavouriteBoardList]];
+            _boards = [[NSMutableArray alloc] initWithArray:[VPTServiceManager getFavouriteBoardList]];
             [_tableView reloadData];
         }
     }
@@ -85,7 +85,7 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"VPTBoardViewCell"];
     
     if (_boardListViewType == BoardListViewTypeAllFavouriteBoards) {
-        [cell.textLabel setText:[VPTDataManager getAllBoardDictionary][_boards[indexPath.row][@"boardId"]][@"desc"]];
+        [cell.textLabel setText:[VPTServiceManager getAllBoardDictionary][_boards[indexPath.row][@"boardId"]][@"desc"]];
     } else if (_boardListViewType == BoardListViewTypeAllSections) {
         [cell.textLabel setText:[[[_sections objectAtIndex:indexPath.row] objectForKey:@"section"] objectForKey:@"desc"]];
     } else {
@@ -108,7 +108,7 @@
     [cell setSelected:NO];
     NSUInteger row = indexPath.row;
     if (_boardListViewType ==BoardListViewTypeAllFavouriteBoards) {
-        NSDictionary *cellInfo = [VPTDataManager getAllBoardDictionary][_boards[indexPath.row][@"boardId"]];
+        NSDictionary *cellInfo = [VPTServiceManager getAllBoardDictionary][_boards[indexPath.row][@"boardId"]];
         VPTTopicListViewController *tlvc = [VPTTopicListViewController new];
         [tlvc setBoardId:cellInfo[@"title"]];
         [tlvc setBoardName:cellInfo[@"desc"]];

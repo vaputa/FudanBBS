@@ -11,7 +11,7 @@
 
 #import "VPTTopicListViewController.h"
 #import "VPTTopicViewController.h"
-#import "VPTDataManager.h"
+#import "VPTServiceManager.h"
 
 @interface VPTTopicListViewController ()
 @property (nonatomic, strong) UITableView *tableView;
@@ -47,11 +47,11 @@
         [_tableView setTableFooterView:_footerView];
         [VPTNetworkService request:[self urlForBoard:_boardId] delegate:self];
     } else if (_topicListViewType == VPTTopicListViewTypeDataFromFavourite) {
-        _topicArray = [[NSMutableArray alloc] initWithArray:[VPTDataManager getFavouriteTopicList]];
+        _topicArray = [[NSMutableArray alloc] initWithArray:[VPTServiceManager getFavouriteTopicList]];
     }
     [self.view addSubview:_tableView];
     
-    _isFavourite = [VPTDataManager isFavouriteBoardWithBoardId:_boardId];
+    _isFavourite = [VPTServiceManager isFavouriteBoardWithBoardId:_boardId];
     _btnFavourite = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
     [_btnFavourite setBackgroundImage:[UIImage imageNamed:_isFavourite ? @"icon_favourite" : @"icon_unfavourite"] forState:UIControlStateNormal];
     [_btnFavourite addTarget:self action:@selector(toggleFavourite) forControlEvents:UIControlEventTouchUpInside];
@@ -70,9 +70,9 @@
 - (void)toggleFavourite {
     
     if (_isFavourite) {
-        [VPTDataManager removeFromFavouriteBoardListWithBoardId:_boardId];
+        [VPTServiceManager removeFromFavouriteBoardListWithBoardId:_boardId];
     } else {
-        [VPTDataManager addToFavouriteBoardListWithBoardId:_boardId];
+        [VPTServiceManager addToFavouriteBoardListWithBoardId:_boardId];
     }
     _isFavourite = !_isFavourite;
     [_btnFavourite setBackgroundImage:[UIImage imageNamed:_isFavourite ? @"icon_favourite" : @"icon_unfavourite"] forState:UIControlStateNormal];
@@ -164,7 +164,7 @@
         }
     } else if (_topicListViewType ==VPTTopicListViewTypeDataFromFavourite) {
         NSString *boardId = [cellInfo objectForKey:@"boardId"];
-        [cell.detailTextLabel setText:[VPTDataManager getAllBoardDictionary][boardId][@"desc"]];
+        [cell.detailTextLabel setText:[VPTServiceManager getAllBoardDictionary][boardId][@"desc"]];
     }
     return cell;
 }
