@@ -85,6 +85,7 @@ strip_invalid_archs() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods/AFNetworking.framework"
+  install_framework "Pods/FlatUIKit.framework"
   install_framework "Pods/Masonry.framework"
   install_framework "Pods/Ono.framework"
   install_framework "Pods/ReactiveCocoa.framework"
@@ -93,6 +94,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods/AFNetworking.framework"
+  install_framework "Pods/FlatUIKit.framework"
   install_framework "Pods/Masonry.framework"
   install_framework "Pods/Ono.framework"
   install_framework "Pods/ReactiveCocoa.framework"
