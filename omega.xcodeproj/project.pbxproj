@@ -75,7 +75,7 @@
 		35D443A01C847019001B4D02 = {
 			isa = PBXGroup;
 			children = (
-				35D443AB1C847019001B4D02 /* FudanBBS */,
+				35D443AB1C847019001B4D02 /* omega */,
 				35D443AA1C847019001B4D02 /* Products */,
 				6170164D6F20D83D58937FD7 /* Pods */,
 				9C5F233F4C308B471F23D948 /* Frameworks */,
@@ -90,7 +90,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		35D443AB1C847019001B4D02 /* FudanBBS */ = {
+		35D443AB1C847019001B4D02 /* omega */ = {
 			isa = PBXGroup;
 			children = (
 				35D443E01C8470D3001B4D02 /* Model */,
@@ -99,7 +99,7 @@
 				35D443B81C847019001B4D02 /* Assets.xcassets */,
 				35D443AC1C847019001B4D02 /* Supporting Files */,
 			);
-			path = FudanBBS;
+			path = omega;
 			sourceTree = "<group>";
 		};
 		35D443AC1C847019001B4D02 /* Supporting Files */ = {
@@ -193,7 +193,7 @@
 			dependencies = (
 			);
 			name = omega;
-			productName = FudanBBS;
+			productName = omega;
 			productReference = 35D443A91C847019001B4D02 /* omega.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -211,7 +211,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 35D443A41C847019001B4D02 /* Build configuration list for PBXProject "FudanBBS" */;
+			buildConfigurationList = 35D443A41C847019001B4D02 /* Build configuration list for PBXProject "omega" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -412,7 +412,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				INFOPLIST_FILE = FudanBBS/Info.plist;
+				INFOPLIST_FILE = omega/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vaputa.omega;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -425,7 +425,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				INFOPLIST_FILE = FudanBBS/Info.plist;
+				INFOPLIST_FILE = omega/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vaputa.omega;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -435,7 +435,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		35D443A41C847019001B4D02 /* Build configuration list for PBXProject "FudanBBS" */ = {
+		35D443A41C847019001B4D02 /* Build configuration list for PBXProject "omega" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				35D443D41C847019001B4D02 /* Debug */,
