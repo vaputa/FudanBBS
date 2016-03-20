@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "35D443A81C847019001B4D02"
-               BuildableName = "FudanBBS.app"
-               BlueprintName = "FudanBBS"
+               BuildableName = "omega.app"
+               BlueprintName = "omega"
                ReferencedContainer = "container:FudanBBS.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -53,8 +53,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "35D443A81C847019001B4D02"
-            BuildableName = "FudanBBS.app"
-            BlueprintName = "FudanBBS"
+            BuildableName = "omega.app"
+            BlueprintName = "omega"
             ReferencedContainer = "container:FudanBBS.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -76,8 +76,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "35D443A81C847019001B4D02"
-            BuildableName = "FudanBBS.app"
-            BlueprintName = "FudanBBS"
+            BuildableName = "omega.app"
+            BlueprintName = "omega"
             ReferencedContainer = "container:FudanBBS.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -95,8 +95,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "35D443A81C847019001B4D02"
-            BuildableName = "FudanBBS.app"
-            BlueprintName = "FudanBBS"
+            BuildableName = "omega.app"
+            BlueprintName = "omega"
             ReferencedContainer = "container:FudanBBS.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
