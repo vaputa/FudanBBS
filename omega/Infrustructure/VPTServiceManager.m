@@ -160,6 +160,12 @@ static NSArray *boardArray;
     return [[self defaultStorage] objectForKey:@"userInformation"];
 }
 
++ (BOOL)clearUserInformation {
+    [[self defaultStorage] removeObjectForKey:@"userInformation"];
+    [[self defaultStorage] synchronize];
+    return YES;
+}
+
 + (BOOL)setUserInformation:(NSDictionary *)userInformation {
     NSUserDefaults *storage = [self defaultStorage];
     [storage setObject:userInformation forKey:@"userInformation"];

@@ -26,6 +26,7 @@
 + (BOOL)setAllBoardDictionary:(NSDictionary *)boardDictionary;
 
 + (NSDictionary *)getUserInformation;
++ (BOOL)clearUserInformation;
 + (BOOL)setUserInformation:(NSDictionary *)userInformation;
 
 @end
