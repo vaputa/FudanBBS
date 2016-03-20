@@ -12,6 +12,7 @@
 #import "VPTTopicViewController.h"
 #import "VPTPostTableViewCell.h"
 #import "VPTServiceManager.h"
+#import "VPTUtil.h"
 
 @interface VPTTopicViewController ()
 @property (nonatomic) BOOL showQuote;
@@ -164,7 +165,10 @@
     [cell setIndexPath:indexPath];
     [cell setFinishSet:_finishSet];
     [cell setImageDictionary:_imageDirectory];
-    [cell.date setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"date"]];
+    
+    NSDate *date = [[_newsArray objectAtIndex:indexPath.row] objectForKey:@"date"];
+    [cell.date setText:[VPTUtil dateToString:date]];
+
     [cell.user setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"nick"]];
     [cell buildContent:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"content"] withReload:YES];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
@@ -186,7 +190,10 @@
     [cell setIndexPath:indexPath];
     [cell setFinishSet:_finishSet];
     [cell setImageDictionary:_imageDirectory];
-    [cell.date setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"date"]];
+
+    NSDate *date = [[_newsArray objectAtIndex:indexPath.row] objectForKey:@"date"];
+    [cell.date setText:[VPTUtil dateToString:date]];
+    
     [cell.user setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"nick"]];
     [cell buildContent:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"content"] withReload:NO];
     if (_showQuote) {
@@ -220,10 +227,10 @@
     for (ONOXMLElement *child in [[document rootElement] children]){
         if ([[child tag] isEqualToString:@"po"]) {
             NSMutableDictionary *post = [NSMutableDictionary new];
-            [post setObject:[[[child childrenWithTag:@"nick"] firstObject] stringValue] forKey:@"nick"];
-            [post setObject:[[[child childrenWithTag:@"date"] firstObject] stringValue] forKey:@"date"];
-            [post setObject:[[[child childrenWithTag:@"title"] firstObject] stringValue] forKey:@"title"];
-            [post setObject:[[[child childrenWithTag:@"board"] firstObject] stringValue] forKey:@"board"];
+            post[@"nick"] = [[[child childrenWithTag:@"nick"] firstObject] stringValue];
+            post[@"date"] = [VPTUtil dateFromString:[[[child childrenWithTag:@"date"] firstObject] stringValue]];
+            post[@"title"] = [[[child childrenWithTag:@"title"] firstObject] stringValue];
+            post[@"board"] = [[[child childrenWithTag:@"board"] firstObject] stringValue];
             NSMutableArray *content = [NSMutableArray new];
             NSString *reply = @"";
             for (ONOXMLElement *pa in [child childrenWithTag:@"pa"]) {
