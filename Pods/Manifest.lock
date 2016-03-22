@@ -15,6 +15,9 @@ PODS:
   - AFNetworking/UIKit (3.0.4):
     - AFNetworking/NSURLSession
   - FlatUIKit (1.6.2)
+  - JSQMessagesViewController (7.2.0):
+    - JSQSystemSoundPlayer (~> 2.0.1)
+  - JSQSystemSoundPlayer (2.0.1)
   - Masonry (0.6.4)
   - Ono (1.2.2)
   - ReactiveCocoa (4.0.1):
@@ -36,6 +39,7 @@ PODS:
 DEPENDENCIES:
   - AFNetworking
   - FlatUIKit
+  - JSQMessagesViewController
   - Masonry
   - Ono
   - ReactiveCocoa
@@ -44,6 +48,8 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
   FlatUIKit: 1b41f0d4952ce8d970d8479ce79df54a960242c4
+  JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
+  JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
   Ono: 80b1c686777d3f6d5d5ce6fcac8a74afef4ca197
   ReactiveCocoa: f7011630aee4deeb16352fcb1b50d6bde9db4f90

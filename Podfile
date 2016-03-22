@@ -5,4 +5,5 @@ pod 'AFNetworking'
 pod 'ReactiveCocoa'
 pod 'SDWebImage'
 pod 'FlatUIKit'
+pod 'JSQMessagesViewController'
 
