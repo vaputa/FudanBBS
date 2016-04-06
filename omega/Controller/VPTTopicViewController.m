@@ -65,6 +65,8 @@
     [_btnFavourite setBackgroundImage:[UIImage imageNamed:_isFavourite ? @"icon_favourite" : @"icon_unfavourite"] forState:UIControlStateNormal];
     [_btnFavourite addTarget:self action:@selector(toggleFavourite) forControlEvents:UIControlEventTouchUpInside];
 
+    [_tableView registerClass:[VPTPostTableViewCell class] forCellReuseIdentifier:@"VPTPostTableViewCell"];
+    
     self.navigationItem.rightBarButtonItems = @[
                                                 [[UIBarButtonItem alloc] initWithCustomView:_btnQuote],
                                                 [[UIBarButtonItem alloc] initWithCustomView:_btnFavourite],
@@ -101,22 +103,21 @@
 - (UIView *)tableFooterView {
     _footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 30)];
 
-    NSDictionary *normal = [NSDictionary dictionaryWithObjects:[[NSArray alloc] initWithObjects:[UIFont systemFontOfSize:14], [UIColor blueColor], nil]
-                                                                forKeys:[[NSArray alloc] initWithObjects:NSFontAttributeName, NSForegroundColorAttributeName, nil]];
-    NSDictionary *disabled = [NSDictionary dictionaryWithObjects:[[NSArray alloc] initWithObjects:[UIFont systemFontOfSize:14], [UIColor grayColor], nil]
+    NSDictionary *normal = [NSDictionary dictionaryWithObjects:[[NSArray alloc] initWithObjects:[UIFont systemFontOfSize:14], [UIColor blackColor], nil]
                                                                 forKeys:[[NSArray alloc] initWithObjects:NSFontAttributeName, NSForegroundColorAttributeName, nil]];
 
     _prevPage = [[UIButton alloc] init];
     _nextPage = [[UIButton alloc] init];
     
+    [_prevPage setImage:[UIImage imageNamed:@"icon_last"] forState:UIControlStateNormal];
+    [_nextPage setImage:[UIImage imageNamed:@"icon_next"] forState:UIControlStateNormal];
+    
     [_prevPage setAttributedTitle:[[NSAttributedString alloc] initWithString:@"上一页" attributes:normal] forState:UIControlStateNormal];
     [_nextPage setAttributedTitle:[[NSAttributedString alloc] initWithString:@"下一页" attributes:normal] forState:UIControlStateNormal];
-
-    [_prevPage setAttributedTitle:[[NSAttributedString alloc] initWithString:@"上一页" attributes:disabled] forState:UIControlStateDisabled];
-    [_nextPage setAttributedTitle:[[NSAttributedString alloc] initWithString:@"下一页" attributes:disabled] forState:UIControlStateDisabled];
-
-    [_prevPage setBackgroundColor:[UIColor grayColor]];
-    [_nextPage setBackgroundColor:[UIColor grayColor]];
+    
+    _nextPage.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+    _nextPage.titleLabel.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+    _nextPage.imageView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
 
     [_prevPage addTarget:self action:@selector(goToPrevPage) forControlEvents:UIControlEventTouchUpInside];
     [_nextPage addTarget:self action:@selector(goToNextPage) forControlEvents:UIControlEventTouchUpInside];
@@ -160,7 +161,7 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
-    VPTPostTableViewCell *cell = [[VPTPostTableViewCell alloc] init];
+    VPTPostTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VPTPostTableViewCell" forIndexPath:indexPath];
     [cell setTableView:_tableView];
     [cell setIndexPath:indexPath];
     [cell setFinishSet:_finishSet];
@@ -174,6 +175,8 @@
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     if (_showQuote) {
         [cell.reply setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"reply"]];
+    } else {
+        [cell.reply setText:nil];
     }
     if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
         [cell setSeparatorInset:UIEdgeInsetsZero];
@@ -198,6 +201,8 @@
     [cell buildContent:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"content"] withReload:NO];
     if (_showQuote) {
         [cell.reply setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"reply"]];
+    } else {
+        [cell.reply setText:nil];
     }
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
@@ -265,10 +270,11 @@
             [_newsArray addObject:post];
         }
     }
-    [_prevPage setEnabled:![[_newsArray firstObject][@"attributes"][@"fid"] isEqualToString:_gid]];
-    [_nextPage setEnabled:[_newsArray count] == 20];
+    [_prevPage setHidden:[[_newsArray firstObject][@"attributes"][@"fid"] isEqualToString:_gid]];
+    [_nextPage setHidden:[_newsArray count] != 20];
     [_footerView setHidden:!([_nextPage isEnabled] || [_prevPage isEnabled])];
     [_tableView reloadData];
+    [_tableView setContentOffset:CGPointMake(0, -_tableView.contentInset.top) animated:NO];
 }
 
 @end

@@ -8,6 +8,7 @@
 
 #import <Masonry/Masonry.h>
 #import <Ono/Ono.h>
+#import <FlatUIKit/FlatUIKit.h>
 
 #import "VPTSettingsViewController.h"
 #import "VPTServiceManager.h"
@@ -16,8 +17,8 @@
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIView *tableHeaderView;
 @property (nonatomic, strong) UIView *loginView;
-@property (nonatomic, strong) UITextField *username;
-@property (nonatomic, strong) UITextField *password;
+@property (nonatomic, strong) FUITextField *username;
+@property (nonatomic, strong) FUITextField *password;
 
 @property (nonatomic, strong) UIView *userInformationView;
 @property (nonatomic, strong) UILabel *usernameLabel;
@@ -93,46 +94,47 @@
 }
 
 - (void)setUpLoginView {
-    _username = [UITextField new];
-    _password = [UITextField new];
-    UIButton *button = [UIButton new];
+    _username = [FUITextField new];
+    _password = [FUITextField new];
+    FUIButton *button = [FUIButton new];
     [_username setPlaceholder:@"用户名"];
     [_username setAutocapitalizationType:UITextAutocapitalizationTypeNone];
     [_username setAutocorrectionType:UITextAutocorrectionTypeNo];
-    [_username setFont:[UIFont systemFontOfSize:15]];
     [_username setClearButtonMode:UITextFieldViewModeWhileEditing];
     [_username setDelegate:self];
     
     [_password setPlaceholder:@"密码"];
     [_password setAutocapitalizationType:UITextAutocapitalizationTypeNone];
     [_password setAutocorrectionType:UITextAutocorrectionTypeNo];
-    [_password setFont:[UIFont systemFontOfSize:15]];
     [_password setClearButtonMode:UITextFieldViewModeWhileEditing];
     [_password setDelegate:self];
     
-    UIImageView *usernamePaddingView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-    [usernamePaddingView setImage:[UIImage imageNamed:@"icon_person"]];
-    [usernamePaddingView setContentMode:UIViewContentModeRight];
-    _username.leftView = usernamePaddingView;
-    _username.leftViewMode = UITextFieldViewModeAlways;
+    _username.font = [UIFont flatFontOfSize:16];
+    _username.backgroundColor = [UIColor clearColor];
+    _username.edgeInsets = UIEdgeInsetsMake(4.0f, 15.0f, 4.0f, 15.0f);
+    _username.textFieldColor = [UIColor whiteColor];
+    _username.borderColor = [UIColor turquoiseColor];
+    _username.borderWidth = 2.0f;
+    _username.cornerRadius = 3.0f;
     
-    [_username.layer setCornerRadius:15];
-    [_username.layer setBorderWidth:2];
-    [_username.layer setBorderColor:[UIColor grayColor].CGColor];
+    _password.font = [UIFont flatFontOfSize:16];
+    _password.backgroundColor = [UIColor clearColor];
+    _password.edgeInsets = UIEdgeInsetsMake(4.0f, 15.0f, 4.0f, 15.0f);
+    _password.textFieldColor = [UIColor whiteColor];
+    _password.borderColor = [UIColor turquoiseColor];
+    _password.borderWidth = 2.0f;
+    _password.cornerRadius = 3.0f;
     
-    UIImageView *passwordPaddingView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-    [passwordPaddingView setImage:[UIImage imageNamed:@"icon_person"]];
-    [passwordPaddingView setContentMode:UIViewContentModeRight];
-
-    _password.leftView = passwordPaddingView;
-    _password.leftViewMode = UITextFieldViewModeAlways;
-
-    [_password.layer setCornerRadius:15];
-    [_password.layer setBorderWidth:2];
-    [_password.layer setBorderColor:[UIColor grayColor].CGColor];
-
+    
+    button.buttonColor = [UIColor turquoiseColor];
+    button.shadowColor = [UIColor greenSeaColor];
+    button.shadowHeight = 3.0f;
+    button.cornerRadius = 6.0f;
+    button.titleLabel.font = [UIFont boldFlatFontOfSize:16];
+    [button setTitleColor:[UIColor cloudsColor] forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor cloudsColor] forState:UIControlStateHighlighted];
+    
     [button setTitle:@"登录" forState:UIControlStateNormal];
-    [button setBackgroundColor:[UIColor lightGrayColor]];
     [button addTarget:self action:@selector(login) forControlEvents:UIControlEventTouchUpInside];
     
     _loginView = [UIView new];
@@ -146,21 +148,19 @@
         make.width.equalTo(_loginView).multipliedBy(0.8);
         make.top.equalTo(_loginView);
         make.centerX.equalTo(_loginView);
-        make.height.equalTo(@30);
     }];
     [_password mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(_username);
-        make.top.equalTo(_username.mas_bottom).offset(10);
+        make.top.equalTo(_username.mas_bottom);
         make.centerX.equalTo(_loginView);
-        make.height.equalTo(_username);
     }];
     
     [button mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(_loginView);
-        make.width.equalTo(_loginView).multipliedBy(0.5);
-        make.top.equalTo(_password.mas_bottom).offset(10);
-        make.height.equalTo(@20);
-        make.bottom.equalTo(_loginView);
+        make.width.equalTo(_loginView).multipliedBy(0.25);
+        make.top.equalTo(_password.mas_bottom);
+        make.height.equalTo(@30);
+        make.bottom.lessThanOrEqualTo(_loginView);
     }];
     
     [_tableHeaderView addSubview:_loginView];
@@ -175,7 +175,7 @@
         make.top.equalTo(_tableHeaderView.superview);
         make.centerX.equalTo(_tableHeaderView.superview);
         make.width.equalTo(_tableHeaderView.superview);
-        make.height.equalTo(@100);
+        make.height.equalTo(@300);
     }];
     [_loginView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(_tableHeaderView);

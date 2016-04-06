@@ -17,8 +17,8 @@
     // Initialization code
 }
 
-- (instancetype)init {
-    self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"VPTPostTableViewCell"];
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     if (self) {
         _user = [[UILabel alloc] init];
         _date = [[UILabel alloc] init];
@@ -48,18 +48,18 @@
             make.top.equalTo(_user.mas_bottom);
             make.left.equalTo(_content);
         }];
-        [_reply mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.width.equalTo(self.contentView).offset(-20);
-            make.bottom.equalTo(self.contentView).offset(-10);
-            make.centerX.equalTo(self.contentView);
-        }];
         [_content mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.width.equalTo(self.contentView).offset(-20);
             make.top.equalTo(_date.mas_bottom).offset(10);
             make.bottom.equalTo(_reply.mas_top).offset(-10);
             make.centerX.equalTo(self.contentView);
         }];
-        
+        [_reply mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.width.equalTo(self.contentView).offset(-20);
+            make.bottom.equalTo(self.contentView).offset(-10);
+            make.centerX.equalTo(self.contentView);
+        }];
+
         [self.contentView mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.edges.equalTo(self);
         }];
@@ -69,6 +69,11 @@
 
 
 - (void)buildContent:(NSMutableArray *)content withReload:(BOOL)reload {
+    if ([_content subviews]) {
+         for (UIView *view in [_content subviews]) {
+             [view removeFromSuperview];
+         }
+    }
     MASViewAttribute* last = [_content mas_top];
     NSMutableArray *imageLoader = [NSMutableArray new];
     for (NSDictionary *para in content) {
@@ -129,11 +134,11 @@
                 }
             }];
         } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [_tableView beginUpdates];
-                [_tableView reloadRowsAtIndexPaths:@[_indexPath] withRowAnimation:UITableViewRowAnimationFade];
-                [_tableView endUpdates];
-            });
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [_tableView beginUpdates];
+//                [_tableView reloadRowsAtIndexPaths:@[_indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//                [_tableView endUpdates];
+//            });
             @synchronized(_finishSet) {
                 [_finishSet addObject:_indexPath];
             }
