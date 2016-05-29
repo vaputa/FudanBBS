@@ -25,7 +25,7 @@
         _reply = [[UILabel alloc] init];
         _content = [[UIView alloc] init];
         
-        [_user setFont:[UIFont systemFontOfSize:15]];
+        [_user setFont:[UIFont systemFontOfSize:12]];
         
         [_date setText:@"2015/01/01 00:00"];
         [_date setFont:[UIFont systemFontOfSize:12]];
@@ -41,7 +41,7 @@
         [self.contentView addSubview:_content];
 
         [_user mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.contentView);
+            make.top.equalTo(self.contentView).offset(5);
             make.left.equalTo(_content);
         }];
         [_date mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -81,7 +81,7 @@
             UILabel *label = [UILabel new];
             [label setText:[para objectForKey:@"text"]];
             [label setNumberOfLines:0];
-            [label setFont:[UIFont systemFontOfSize:12]];
+            [label setFont:[UIFont systemFontOfSize:14]];
             [_content addSubview:label];
             [label setPreferredMaxLayoutWidth:[[UIScreen mainScreen] bounds].size.width - 20];
             [label mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -134,11 +134,6 @@
                 }
             }];
         } else {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                [_tableView beginUpdates];
-//                [_tableView reloadRowsAtIndexPaths:@[_indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//                [_tableView endUpdates];
-//            });
             @synchronized(_finishSet) {
                 [_finishSet addObject:_indexPath];
             }

@@ -7,6 +7,7 @@
 //
 
 #import "VPTServiceManager.h"
+#import <Ono/Ono.h>
 
 @interface VPTServiceManager()
 @end
@@ -57,7 +58,7 @@ static NSArray *boardArray;
     __block BOOL isFound = NO;
     __block NSUInteger index = -1;
     [favouriteList enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([boardId isEqualToString: obj[@"boardId"]] && [topicId isEqualToString:obj[@"id"]]) {
+        if ([boardId isEqualToString:obj[@"boardId"]] && [topicId isEqualToString:obj[@"id"]]) {
             isFound = YES;
             index = idx;
             *stop = YES;
@@ -189,6 +190,45 @@ static NSArray *boardArray;
         [storage synchronize];
     }
     return storage;
+}
+
++ (BOOL)replyWithTitle:(NSString *)title boardId:(NSString *)boardId topic:(NSString *)topicId text:(NSString *)text {
+    NSString *url = [[NSString alloc] initWithFormat:@"http://bbs.fudan.edu.cn/bbs/snd?board=%@&f=%@&utf8=1", boardId, topicId];
+    NSDictionary *data = @{@"title":title, @"sig":@"1", @"text":text};
+    [VPTNetworkService post:url data:data delegate:nil];
+    return YES;
+}
+
+#pragma mark login/logout service
++ (void)loginWithUsername:(NSString *)username
+                 password:(NSString *)password
+                  success:(void (^_Nullable)(NSDictionary *))success
+                  failure:(void (^_Nullable)(NSDictionary *))failure {
+    [VPTNetworkService post:@"https://bbs.fudan.edu.cn/bbs/login"
+                       data:@{
+                              @"id": username,
+                              @"pw": password,
+                              @"persistent": @"on"
+                              }
+                 completion:^(NSString * data, NSError * error) {
+                     if (!error) {
+                         if ([data hasPrefix:@"<html>"] || data == nil) {
+                             failure(@{@"code":@"403", @"error": @"用户名和密码不匹配"});
+                         } else {
+                             data = [data stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
+                             ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[data dataUsingEncoding:NSUTF8StringEncoding] error:nil];
+                             NSString *nickname = [[[[[[document rootElement] childrenWithTag:@"session"] firstObject] childrenWithTag:@"u"] firstObject] stringValue];
+                             NSDictionary *userInformation = @{@"username": nickname };
+                             [VPTServiceManager setUserInformation:userInformation];
+                             success(userInformation);
+                         }
+                     } else {
+                         failure(@{@"code":@"404", @"error": @"网络无法连接"});
+                     }
+                 }];
+}
++ (void)logout {
+    [VPTNetworkService request:@"http://bbs.fudan.edu.cn/bbs/logout" completion:nil];
 }
 
 @end

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "VPTNetworkService.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, DataReceiveDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

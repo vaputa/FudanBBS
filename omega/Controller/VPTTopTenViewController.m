@@ -74,7 +74,7 @@
     NSDictionary *cellInfo = _topicArray[indexPath.row];
     [cell.textLabel setText:cellInfo[@"title"]];
     [cell.detailTextLabel setText:[[VPTServiceManager getAllBoardDictionary] objectForKey:cellInfo[@"attributes"][@"board"]][@"desc"]];
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
     [label setTextAlignment:NSTextAlignmentCenter];
     [label setText:cellInfo[@"attributes"][@"count"]];
     label.layer.cornerRadius = 15;
@@ -82,6 +82,11 @@
     label.layer.borderWidth = 1;
     [label setAdjustsFontSizeToFitWidth:YES];
     [cell.contentView addSubview:label];
+    [cell.textLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(cell.contentView.mas_left).offset(15);
+        make.top.equalTo(cell.contentView.mas_top).offset(5);
+        make.right.equalTo(label.mas_left);
+    }];
     [label mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@30);
         make.width.equalTo(label.mas_height);

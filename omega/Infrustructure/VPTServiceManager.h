@@ -8,10 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+#import "VPTNetworkService.h"
+
 @interface VPTServiceManager : NSObject
 
 + (NSArray *)getFavouriteTopicList;
-+ (BOOL)addToFavouriteTopicListWithBoardName:(NSString *)boardName boardId:(NSString *)_boardId topicId:(NSString *)topicId title:(NSString *)title;
++ (BOOL)addToFavouriteTopicListWithBoardName:(NSString *)boardName boardId:(NSString *)boardId topicId:(NSString *)topicId title:(NSString *)title;
 + (BOOL)removeFromFavouriteTopicListWithBoardName:(NSString *)boardName boardId:(NSString *)boardId topicId:(NSString *)topicId;
 + (BOOL)isFavouriteTopicWithBoardId:(NSString *)boardId topicId:(NSString *)topicId;
 
@@ -28,5 +30,14 @@
 + (NSDictionary *)getUserInformation;
 + (BOOL)clearUserInformation;
 + (BOOL)setUserInformation:(NSDictionary *)userInformation;
+
+
++ (BOOL)replyWithTitle:(NSString *)title boardId:(NSString *)boardId topic:(NSString *)topicId text:(NSString *)text;
+
++ (void)loginWithUsername:(NSString *)username
+                 password:(NSString *)password
+                  success:(void (^_Nullable)(NSDictionary *))success
+                  failure:(void (^_Nullable)(NSDictionary * _Nullable))failure;
++ (void)logout;
 
 @end

@@ -7,7 +7,6 @@
 //
 
 #import <Masonry/Masonry.h>
-#import <Ono/Ono.h>
 #import <FlatUIKit/FlatUIKit.h>
 
 #import "VPTSettingsViewController.h"
@@ -187,34 +186,27 @@
 }
 
 - (void)login {
-    [VPTNetworkService post:@"http://bbs.fudan.edu.cn/bbs/login"
-                       data:@{
-                              @"username": _username.text,
-                              @"password": _password.text
-                              }
-                   delegate:self];
+    [VPTServiceManager loginWithUsername:_username.text
+                                password:_password.text
+                                 success:^(NSDictionary *result) {
+                                     [self updateTableHeaderView];
+                                 } failure:^(NSDictionary *result) {
+                                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"登录失败"
+                                                                                         message:result[@"error"]
+                                                                                        delegate:nil
+                                                                               cancelButtonTitle:@"重新登录"
+                                                                               otherButtonTitles:nil];
+                                     [alertView show];
+                                 }];
 }
 
 - (void)logout {
     [VPTServiceManager clearUserInformation];
-    [VPTNetworkService request:@"http://bbs.fudan.edu.cn/bbs/logout" delegate:nil];
+    [VPTServiceManager logout];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-}
-
-- (void)receiveData:(NSString *)data {
-    if ([data hasPrefix:@"<html>"] || data == nil) {
-        [_hint setText:@"用户名和密码不匹配"];
-    } else {
-        data = [data stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
-        ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[data dataUsingEncoding:NSUTF8StringEncoding] error:nil];
-        NSString *nickname = [[[[[[document rootElement] childrenWithTag:@"session"] firstObject] childrenWithTag:@"u"] firstObject] stringValue];
-        NSDictionary *userInformation = @{@"username": nickname };
-        [VPTServiceManager setUserInformation:userInformation];
-    }
-    [self updateTableHeaderView];
 }
 
 @end

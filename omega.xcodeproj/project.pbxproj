@@ -20,6 +20,7 @@
 		35D443E71C84719F001B4D02 /* VPTWelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D443E61C84719F001B4D02 /* VPTWelcomeViewController.m */; };
 		35D443EB1C8474FA001B4D02 /* VPTNetworkService.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D443EA1C8474FA001B4D02 /* VPTNetworkService.m */; };
 		35D443EE1C847617001B4D02 /* VPTTopTenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D443ED1C847617001B4D02 /* VPTTopTenViewController.m */; };
+		35D5EF661CC36FA1000C0947 /* VPTReplyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D5EF651CC36FA1000C0947 /* VPTReplyViewController.m */; };
 		35DE57711C93AD700029511F /* VPTSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35DE57701C93AD700029511F /* VPTSettingsViewController.m */; };
 		35F1EDA21C95307A00878E71 /* VPTServiceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 35F1EDA11C95307A00878E71 /* VPTServiceManager.m */; };
 		35F1EDA51C95362800878E71 /* VPTPersonalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35F1EDA41C95362800878E71 /* VPTPersonalViewController.m */; };
@@ -54,6 +55,8 @@
 		35D443EA1C8474FA001B4D02 /* VPTNetworkService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTNetworkService.m; path = Infrustructure/VPTNetworkService.m; sourceTree = "<group>"; };
 		35D443EC1C847617001B4D02 /* VPTTopTenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTTopTenViewController.h; path = Controller/VPTTopTenViewController.h; sourceTree = "<group>"; };
 		35D443ED1C847617001B4D02 /* VPTTopTenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTTopTenViewController.m; path = Controller/VPTTopTenViewController.m; sourceTree = "<group>"; };
+		35D5EF641CC36FA1000C0947 /* VPTReplyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTReplyViewController.h; path = Controller/VPTReplyViewController.h; sourceTree = "<group>"; };
+		35D5EF651CC36FA1000C0947 /* VPTReplyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTReplyViewController.m; path = Controller/VPTReplyViewController.m; sourceTree = "<group>"; };
 		35DE576F1C93AD700029511F /* VPTSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTSettingsViewController.h; path = Controller/VPTSettingsViewController.h; sourceTree = "<group>"; };
 		35DE57701C93AD700029511F /* VPTSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTSettingsViewController.m; path = Controller/VPTSettingsViewController.m; sourceTree = "<group>"; };
 		35F1EDA01C95307A00878E71 /* VPTServiceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTServiceManager.h; path = Infrustructure/VPTServiceManager.h; sourceTree = "<group>"; };
@@ -126,6 +129,8 @@
 				35D443ED1C847617001B4D02 /* VPTTopTenViewController.m */,
 				357EFE331C87307F009B297C /* VPTTopicViewController.h */,
 				357EFE341C87307F009B297C /* VPTTopicViewController.m */,
+				35D5EF641CC36FA1000C0947 /* VPTReplyViewController.h */,
+				35D5EF651CC36FA1000C0947 /* VPTReplyViewController.m */,
 				351719EC1C8C123400DA1E07 /* VPTBoardListViewController.h */,
 				351719ED1C8C123400DA1E07 /* VPTBoardListViewController.m */,
 				351719EF1C8C285C00DA1E07 /* VPTTopicListViewController.h */,
@@ -213,6 +218,7 @@
 				TargetAttributes = {
 					35D443A81C847019001B4D02 = {
 						CreatedOnToolsVersion = 7.2.1;
+						DevelopmentTeam = 9J84E5CFM9;
 					};
 				};
 			};
@@ -306,6 +312,7 @@
 				351719F11C8C285C00DA1E07 /* VPTTopicListViewController.m in Sources */,
 				35F1EDA21C95307A00878E71 /* VPTServiceManager.m in Sources */,
 				35DE57711C93AD700029511F /* VPTSettingsViewController.m in Sources */,
+				35D5EF661CC36FA1000C0947 /* VPTReplyViewController.m in Sources */,
 				35942B0A1C89F1BE00CD8BE6 /* VPTPostTableViewCell.m in Sources */,
 				35AFB37D1C9EBE1C000A8B0C /* VPTUtil.m in Sources */,
 				351719EE1C8C123400DA1E07 /* VPTBoardListViewController.m in Sources */,
@@ -419,6 +426,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = omega/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vaputa.omega;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -432,6 +440,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = omega/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vaputa.omega;
 				PRODUCT_NAME = "$(TARGET_NAME)";

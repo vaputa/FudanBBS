@@ -6,10 +6,11 @@
 //  Copyright © 2016 vaputa. All rights reserved.
 //
 
-#import "Masonry/Masonry.h"
-#import "Ono.h"
+#import <Masonry/Masonry.h>
+#import <Ono/Ono.h>
 
 #import "VPTTopicViewController.h"
+#import "VPTReplyViewController.h"
 #import "VPTPostTableViewCell.h"
 #import "VPTServiceManager.h"
 #import "VPTUtil.h"
@@ -25,9 +26,9 @@
 @property (nonatomic, strong) UIButton *nextPage;
 @property (nonatomic, strong) UIButton *btnFavourite;
 @property (nonatomic, strong) UIButton *btnQuote;
+@property (nonatomic, strong) UIButton *btnReply;
 @property (nonatomic, strong) NSMutableDictionary *imageDirectory;
 @property (nonatomic, strong) NSMutableSet *finishSet;
-
 @end
 
 @implementation VPTTopicViewController
@@ -44,7 +45,8 @@
     [_tableView setDataSource:self];
     [_tableView setTableHeaderView:[self tableHeaderView]];
     [_tableView setTableFooterView:[self tableFooterView]];
-    
+    _tableView.bounces = NO;
+
     [_footerView setHidden:YES];
     
     [_tableView registerClass:[VPTPostTableViewCell class] forCellReuseIdentifier:@"PostTableViewCell"];
@@ -64,15 +66,28 @@
     _btnFavourite = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
     [_btnFavourite setBackgroundImage:[UIImage imageNamed:_isFavourite ? @"icon_favourite" : @"icon_unfavourite"] forState:UIControlStateNormal];
     [_btnFavourite addTarget:self action:@selector(toggleFavourite) forControlEvents:UIControlEventTouchUpInside];
+    
+    _btnReply = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
+    [_btnReply setBackgroundImage:[UIImage imageNamed:@"icon_reply"] forState:UIControlStateNormal];
+    [_btnReply addTarget:self action:@selector(replyTopic) forControlEvents:UIControlEventTouchUpInside];
 
     [_tableView registerClass:[VPTPostTableViewCell class] forCellReuseIdentifier:@"VPTPostTableViewCell"];
     
     self.navigationItem.rightBarButtonItems = @[
+                                                [[UIBarButtonItem alloc] initWithCustomView:_btnReply],
                                                 [[UIBarButtonItem alloc] initWithCustomView:_btnQuote],
                                                 [[UIBarButtonItem alloc] initWithCustomView:_btnFavourite],
                                                ];
     [self.view addSubview:_tableView];
     [self updateViewConstraints];
+}
+
+- (void)replyTopic {
+    VPTReplyViewController *rvc = [VPTReplyViewController new];
+    [rvc setTopicID:_gid];
+    [rvc setBoardID:_boardId];
+    [rvc setReTitle:_postTitle];
+    [self.navigationController pushViewController:rvc animated:YES];
 }
 
 - (void)toggleFavourite {
@@ -101,6 +116,9 @@
 }
 
 - (UIView *)tableFooterView {
+    if (_footerView) {
+        return _footerView;
+    }
     _footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 30)];
 
     NSDictionary *normal = [NSDictionary dictionaryWithObjects:[[NSArray alloc] initWithObjects:[UIFont systemFontOfSize:14], [UIColor blackColor], nil]
@@ -272,7 +290,12 @@
     }
     [_prevPage setHidden:[[_newsArray firstObject][@"attributes"][@"fid"] isEqualToString:_gid]];
     [_nextPage setHidden:[_newsArray count] != 20];
-    [_footerView setHidden:!([_nextPage isEnabled] || [_prevPage isEnabled])];
+    [_footerView setHidden:[_nextPage isHidden] && [_prevPage isHidden]];
+    if ([_footerView isHidden]) {
+        [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
+    } else {
+        [_tableView setTableFooterView:_footerView];
+    }
     [_tableView reloadData];
     [_tableView setContentOffset:CGPointMake(0, -_tableView.contentInset.top) animated:NO];
 }

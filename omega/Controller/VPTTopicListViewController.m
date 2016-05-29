@@ -42,6 +42,7 @@
     [_tableView setDelegate:self];
     [_tableView setDataSource:self];
     [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
+    _tableView.bounces = NO;
     if (_topicListViewType == VPTTopicListViewTypeDataFromBoard) {
         _footerView = [self tableFooterView];
         [_tableView setTableFooterView:_footerView];
@@ -212,6 +213,7 @@
     [_prevPage setHidden:!(_boardStart > 0)];
     [_footerView setHidden:!([_nextPage isEnabled] || [_prevPage isEnabled])];
     [_tableView reloadData];
+    [_tableView setContentOffset:CGPointMake(0, -_tableView.contentInset.top)];
 }
 
 
