@@ -36,8 +36,10 @@
 
 + (void)loginWithUsername:(NSString *)username
                  password:(NSString *)password
-                  success:(void (^_Nullable)(NSDictionary *))success
-                  failure:(void (^_Nullable)(NSDictionary * _Nullable))failure;
+                  success:(void (^)(NSDictionary *))success
+                  failure:(void (^)(NSDictionary *))failure;
 + (void)logout;
+
++ (void)fetchTopTenDataWithCompletionHandler:(void (^)(id result, NSError *error))completionHandler;
 
 @end

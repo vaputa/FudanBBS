@@ -1,9 +1,10 @@
 use_frameworks!
-pod 'Masonry'
-pod 'Ono'
-pod 'AFNetworking'
-pod 'ReactiveCocoa'
-pod 'SDWebImage'
-pod 'FlatUIKit'
-pod 'JSQMessagesViewController'
-
+target :omega do
+    pod 'Masonry'
+    pod 'Ono'
+    pod 'AFNetworking'
+    pod 'ReactiveCocoa'
+    pod 'SDWebImage'
+    pod 'FlatUIKit'
+    pod 'JSQMessagesViewController'
+end

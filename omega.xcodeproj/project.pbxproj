@@ -22,13 +22,16 @@
 		35D443EE1C847617001B4D02 /* VPTTopTenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D443ED1C847617001B4D02 /* VPTTopTenViewController.m */; };
 		35D5EF661CC36FA1000C0947 /* VPTReplyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D5EF651CC36FA1000C0947 /* VPTReplyViewController.m */; };
 		35DE57711C93AD700029511F /* VPTSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35DE57701C93AD700029511F /* VPTSettingsViewController.m */; };
+		35E67B411D71D7E3009E707C /* VPTTopic.m in Sources */ = {isa = PBXBuildFile; fileRef = 35E67B401D71D7E3009E707C /* VPTTopic.m */; };
+		35E67B441D71E852009E707C /* VPTTopTenTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 35E67B431D71E852009E707C /* VPTTopTenTableViewCell.m */; };
 		35F1EDA21C95307A00878E71 /* VPTServiceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 35F1EDA11C95307A00878E71 /* VPTServiceManager.m */; };
 		35F1EDA51C95362800878E71 /* VPTPersonalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35F1EDA41C95362800878E71 /* VPTPersonalViewController.m */; };
-		B0134005F14374EA404B10D2 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07817751C522B0EFCBC95B46 /* Pods.framework */; };
+		AD3D6C66D5036838BE188559 /* Pods_omega.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F5B7F80471134B8BBD72D2 /* Pods_omega.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		07817751C522B0EFCBC95B46 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		29F5B7F80471134B8BBD72D2 /* Pods_omega.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_omega.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2AEF0BB7835F2995117E6C80 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		351719EC1C8C123400DA1E07 /* VPTBoardListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTBoardListViewController.h; path = Controller/VPTBoardListViewController.h; sourceTree = "<group>"; };
 		351719ED1C8C123400DA1E07 /* VPTBoardListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTBoardListViewController.m; path = Controller/VPTBoardListViewController.m; sourceTree = "<group>"; };
@@ -59,6 +62,10 @@
 		35D5EF651CC36FA1000C0947 /* VPTReplyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTReplyViewController.m; path = Controller/VPTReplyViewController.m; sourceTree = "<group>"; };
 		35DE576F1C93AD700029511F /* VPTSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTSettingsViewController.h; path = Controller/VPTSettingsViewController.h; sourceTree = "<group>"; };
 		35DE57701C93AD700029511F /* VPTSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTSettingsViewController.m; path = Controller/VPTSettingsViewController.m; sourceTree = "<group>"; };
+		35E67B3F1D71D7E3009E707C /* VPTTopic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTTopic.h; path = Model/VPTTopic.h; sourceTree = "<group>"; };
+		35E67B401D71D7E3009E707C /* VPTTopic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTTopic.m; path = Model/VPTTopic.m; sourceTree = "<group>"; };
+		35E67B421D71E852009E707C /* VPTTopTenTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTTopTenTableViewCell.h; path = Model/VPTTopTenTableViewCell.h; sourceTree = "<group>"; };
+		35E67B431D71E852009E707C /* VPTTopTenTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTTopTenTableViewCell.m; path = Model/VPTTopTenTableViewCell.m; sourceTree = "<group>"; };
 		35F1EDA01C95307A00878E71 /* VPTServiceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTServiceManager.h; path = Infrustructure/VPTServiceManager.h; sourceTree = "<group>"; };
 		35F1EDA11C95307A00878E71 /* VPTServiceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTServiceManager.m; path = Infrustructure/VPTServiceManager.m; sourceTree = "<group>"; };
 		35F1EDA31C95362800878E71 /* VPTPersonalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTPersonalViewController.h; path = Controller/VPTPersonalViewController.h; sourceTree = "<group>"; };
@@ -71,7 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0134005F14374EA404B10D2 /* Pods.framework in Frameworks */,
+				AD3D6C66D5036838BE188559 /* Pods_omega.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,6 +155,10 @@
 			children = (
 				35942B081C89F1BE00CD8BE6 /* VPTPostTableViewCell.h */,
 				35942B091C89F1BE00CD8BE6 /* VPTPostTableViewCell.m */,
+				35E67B421D71E852009E707C /* VPTTopTenTableViewCell.h */,
+				35E67B431D71E852009E707C /* VPTTopTenTableViewCell.m */,
+				35E67B3F1D71D7E3009E707C /* VPTTopic.h */,
+				35E67B401D71D7E3009E707C /* VPTTopic.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -180,6 +191,7 @@
 			isa = PBXGroup;
 			children = (
 				07817751C522B0EFCBC95B46 /* Pods.framework */,
+				29F5B7F80471134B8BBD72D2 /* Pods_omega.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -280,7 +292,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-omega/Pods-omega-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FA54C19BE5C3D5B0AC37603B /* Embed Pods Frameworks */ = {
@@ -295,7 +307,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-omega/Pods-omega-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -306,6 +318,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				35D443EE1C847617001B4D02 /* VPTTopTenViewController.m in Sources */,
+				35E67B441D71E852009E707C /* VPTTopTenTableViewCell.m in Sources */,
 				3553AE701C9D4A0B0001703B /* VPTHttpClient.m in Sources */,
 				35D443B11C847019001B4D02 /* AppDelegate.m in Sources */,
 				35D443E71C84719F001B4D02 /* VPTWelcomeViewController.m in Sources */,
@@ -319,6 +332,7 @@
 				357EFE351C87307F009B297C /* VPTTopicViewController.m in Sources */,
 				35D443EB1C8474FA001B4D02 /* VPTNetworkService.m in Sources */,
 				35D443AE1C847019001B4D02 /* main.m in Sources */,
+				35E67B411D71D7E3009E707C /* VPTTopic.m in Sources */,
 				35F1EDA51C95362800878E71 /* VPTPersonalViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -430,6 +444,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vaputa.omega;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -444,6 +459,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vaputa.omega;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

@@ -14,10 +14,14 @@
 #import "VPTTopTenViewController.h"
 #import "VPTTopicViewController.h"
 #import "VPTServiceManager.h"
+#import "VPTTopic.h"
+#import "VPTTopTenTableViewCell.h"
 
-@interface VPTTopTenViewController ()
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+
+@interface VPTTopTenViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (strong) UITableView *tableView;
-@property (strong) NSMutableArray *topicArray;
+@property (nonatomic, strong) NSArray *dataSource;
 @end
 
 @implementation VPTTopTenViewController
@@ -33,10 +37,15 @@
     [super viewDidLoad];
     
     _tableView = [[UITableView alloc] init];
-    [_tableView setDelegate:self];
-    [_tableView setDataSource:self];
+    _tableView.delegate = self;
+    _tableView.dataSource = self;
+    [_tableView registerClass:[VPTTopTenTableViewCell class] forCellReuseIdentifier:@"TopTenCell"];
     [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
 
+    [self.navigationController.navigationBar configureFlatNavigationBarWithColor:[UIColor midnightBlueColor]];
+    self.navigationController.navigationBar.titleTextAttributes = @{NSFontAttributeName:[UIFont boldFlatFontOfSize:18],
+                                                                    NSForegroundColorAttributeName: [UIColor whiteColor]};
+    
     UIEdgeInsets adjustForTabbarInsets = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController.tabBar.frame), 0);
     [_tableView setContentInset:adjustForTabbarInsets];
     [_tableView setScrollIndicatorInsets:adjustForTabbarInsets];
@@ -44,19 +53,27 @@
     [self.view addSubview:_tableView];
     
     if ([_tableView respondsToSelector:@selector(setSeparatorInset:)]) {
-        [_tableView setSeparatorInset:UIEdgeInsetsZero];
+        _tableView.separatorInset = UIEdgeInsetsZero;
     }
     if ([_tableView respondsToSelector:@selector(setLayoutMargins:)]) {
-        [_tableView setLayoutMargins:UIEdgeInsetsZero];
+        _tableView.layoutMargins = UIEdgeInsetsZero;
     }
-    _topicArray = [[NSMutableArray alloc] init];
-    [VPTNetworkService request:@"http://bbs.fudan.edu.cn/bbs/top10" delegate:self];
     [self updateViewConstraints];
+    [VPTServiceManager fetchTopTenDataWithCompletionHandler:^(id result, NSError *error) {
+        if (!error) {
+            _dataSource = result;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_tableView reloadData];
+            });
+        } else {
+            
+        }
+    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self.tabBarController setTitle:@"今日十大"];    
+    [self setTitle:@"今日十大"];
 }
 
 - (void)updateViewConstraints{
@@ -70,17 +87,26 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"TOPTenCell"];
-    NSDictionary *cellInfo = _topicArray[indexPath.row];
-    [cell.textLabel setText:cellInfo[@"title"]];
-    [cell.detailTextLabel setText:[[VPTServiceManager getAllBoardDictionary] objectForKey:cellInfo[@"attributes"][@"board"]][@"desc"]];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TopTenCell" forIndexPath:indexPath];
+    [cell configureFlatCellWithColor:[UIColor greenSeaColor]
+                       selectedColor:[UIColor cloudsColor]
+                     roundingCorners:UIRectCornerAllCorners];
+    cell.cornerRadius = 10.0f; // optional
+
+    VPTTopic *topic = _dataSource[indexPath.row];
+    cell.textLabel.text = topic.title;
+    cell.detailTextLabel.text = [[VPTServiceManager getAllBoardDictionary] objectForKey:topic.board][@"desc"];
+    
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-    [label setTextAlignment:NSTextAlignmentCenter];
-    [label setText:cellInfo[@"attributes"][@"count"]];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.text = topic.count;
     label.layer.cornerRadius = 15;
     label.layer.borderColor = [UIColor turquoiseColor].CGColor;
     label.layer.borderWidth = 1;
-    [label setAdjustsFontSizeToFitWidth:YES];
+    label.adjustsFontSizeToFitWidth = YES;
+    label.textColor = [UIColor cloudsColor];
+    label.highlightedTextColor = [UIColor greenSeaColor];
+    
     [cell.contentView addSubview:label];
     [cell.textLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(cell.contentView.mas_left).offset(15);
@@ -94,41 +120,26 @@
         make.centerY.equalTo(cell.contentView);
     }];
     if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
-        [cell setSeparatorInset:UIEdgeInsetsZero];
+        cell.separatorInset = UIEdgeInsetsZero;
     }
     if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
-        [cell setLayoutMargins:UIEdgeInsetsZero];
+        cell.layoutMargins = UIEdgeInsetsZero;
     }
     return cell;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [_topicArray count];
-}
-
-- (void)receiveData:(NSString *)data{
-    data = [data stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
-    ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[data dataUsingEncoding:NSUTF8StringEncoding] error:nil];
-    for (ONOXMLElement *element in [document.rootElement children]){
-        if ([@"top" isEqualToString:[element tag]]){
-            [_topicArray addObject:@{
-                                     @"title":[[element stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                                     @"attributes":[element attributes],
-                                     }
-             ];
-        }
-    }
-    [_tableView reloadData];
+    return [_dataSource count];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    NSDictionary *cellInfo = [_topicArray objectAtIndex:indexPath.row];
     [cell setSelected:NO];
-    VPTTopicViewController *tvc = [[VPTTopicViewController alloc] init];
-    [tvc setGid:cellInfo[@"attributes"][@"gid"]];
-    [tvc setBoardId:cellInfo[@"attributes"][@"board"]];
-    [tvc setPostTitle:cellInfo[@"title"]];
+    VPTTopic *topic = _dataSource[indexPath.row];
+    VPTTopicViewController *tvc = [VPTTopicViewController new];
+    [tvc setGid:topic.gid];
+    [tvc setBoardId:topic.board];
+    [tvc setPostTitle:topic.title];
     [self.navigationController pushViewController:tvc animated:YES];
 }
 

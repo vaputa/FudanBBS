@@ -7,6 +7,8 @@
 //
 
 #import "VPTServiceManager.h"
+#import "VPTTopic.h"
+
 #import <Ono/Ono.h>
 
 @interface VPTServiceManager()
@@ -229,6 +231,32 @@ static NSArray *boardArray;
 }
 + (void)logout {
     [VPTNetworkService request:@"http://bbs.fudan.edu.cn/bbs/logout" completion:nil];
+}
+
+#pragma mark fetch data
+
++ (void)fetchTopTenDataWithCompletionHandler:(void (^)(id result, NSError *error))completionHandler {
+    [VPTNetworkService requestWithUrlString:@"https://bbs.fudan.edu.cn/bbs/top10" method:@"GET" completionHandler:^(NSString *response, NSError *error) {
+        if (!error) {
+            NSString *data = [response stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
+            NSMutableArray *result = [NSMutableArray new];
+            ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[data dataUsingEncoding:NSUTF8StringEncoding] error:nil];
+            for (ONOXMLElement *element in [document.rootElement children]){
+                if ([@"top" isEqualToString:[element tag]]){
+                    VPTTopic *topic = [VPTTopic new];
+                    topic.title = [[element stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    topic.board = [element attributes][@"board"];
+                    topic.owner = [element attributes][@"owner"];
+                    topic.gid = [element attributes][@"gid"];
+                    topic.count = [element attributes][@"count"];
+                    [result addObject:topic];
+                }
+            }
+            completionHandler(result, nil);
+        } else {
+            completionHandler(nil, error);
+        }
+    }];
 }
 
 @end

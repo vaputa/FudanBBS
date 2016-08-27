@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "VPTNetworkService.h"
 
-@interface VPTTopTenViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, DataReceiveDelegate>
+@interface VPTTopTenViewController : UIViewController
 
 @end

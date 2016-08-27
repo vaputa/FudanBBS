@@ -14,11 +14,13 @@
 
 @interface VPTNetworkService : NSObject
 
++ (void)requestWithUrlString:(NSString *)urlString method:(NSString *)method completionHandler:(void (^)(NSString *, NSError *))completionHandler;
+
 + (void)request:(NSString *)url delegate:(id<DataReceiveDelegate>)delegate;
 + (void)post:(NSString *)urlString data:(NSDictionary *)dictionary delegate:(id<DataReceiveDelegate>)delegate;
 
 + (void)request:(NSString *)urlString completion:(void (^_Nullable)(NSString *, NSError *_Nullable))completion;
-+ (void)post:(NSString * _Nonnull)urlString data:(NSDictionary *_Nullable)dictionary completion:(void (^_Nullable)(NSString *, NSError *_Nullable))completion;
++ (void)post:(NSString * _Nonnull)urlString data:(NSDictionary *_Nullable)dictionary completion:(void (^)(NSString *, NSError *))completion;
 
 @end
 

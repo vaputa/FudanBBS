@@ -24,6 +24,21 @@ static VPTHttpClient *httpClient;
     httpClient = [VPTHttpClient getInstance];
 }
 
++ (void)requestWithUrlString:(NSString *)urlString method:(NSString *)method completionHandler:(void (^_Nullable)(NSString *, NSError *_Nullable))completionHandler {
+    NSURL *URL = [NSURL URLWithString:urlString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+    [request setHTTPMethod:method];
+    NSURLSessionDataTask *downloadTask = [httpClient.sessionManager dataTaskWithRequest:request
+                                                                      completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+                                                                          NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+                                                                          NSString *result = [[NSString alloc] initWithData:responseObject encoding:enc];
+                                                                          completionHandler(result, error);
+                                                                          [httpClient saveCookies];
+                                                                      }];
+    [downloadTask resume];
+
+}
+
 + (void)request:(NSString *)urlString delegate:(id<DataReceiveDelegate>)delegate{
     NSURL *URL = [NSURL URLWithString:urlString];
     NSURLRequest *request = [NSURLRequest requestWithURL:URL];
