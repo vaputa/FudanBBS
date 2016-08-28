@@ -10,5 +10,6 @@
 
 @interface VPTUtil : NSObject
 + (NSDate *)dateFromString:(NSString *)date;
++ (NSDate *)dateFromStandardString:(NSString *)date;
 + (NSString *)dateToString:(NSDate *)date;
 @end

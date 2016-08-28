@@ -38,6 +38,7 @@
 		357EFE351C87307F009B297C /* VPTTopicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 357EFE341C87307F009B297C /* VPTTopicViewController.m */; };
 		358D12F01D72BF43005645AB /* VPTTopicDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = 358D12EF1D72BF43005645AB /* VPTTopicDetail.m */; };
 		358D12F31D72BF9A005645AB /* VPTPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 358D12F21D72BF9A005645AB /* VPTPost.m */; };
+		358D12F71D72CD2E005645AB /* VPTSimpleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 358D12F61D72CD2E005645AB /* VPTSimpleCell.m */; };
 		35942B0A1C89F1BE00CD8BE6 /* VPTPostTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 35942B091C89F1BE00CD8BE6 /* VPTPostTableViewCell.m */; };
 		35AFB37D1C9EBE1C000A8B0C /* VPTUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 35AFB37C1C9EBE1C000A8B0C /* VPTUtil.m */; };
 		35D443AE1C847019001B4D02 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D443AD1C847019001B4D02 /* main.m */; };
@@ -116,6 +117,8 @@
 		358D12EF1D72BF43005645AB /* VPTTopicDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTTopicDetail.m; path = Model/VPTTopicDetail.m; sourceTree = "<group>"; };
 		358D12F11D72BF9A005645AB /* VPTPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTPost.h; path = Model/VPTPost.h; sourceTree = "<group>"; };
 		358D12F21D72BF9A005645AB /* VPTPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTPost.m; path = Model/VPTPost.m; sourceTree = "<group>"; };
+		358D12F51D72CD2E005645AB /* VPTSimpleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VPTSimpleCell.h; sourceTree = "<group>"; };
+		358D12F61D72CD2E005645AB /* VPTSimpleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VPTSimpleCell.m; sourceTree = "<group>"; };
 		35942B081C89F1BE00CD8BE6 /* VPTPostTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTPostTableViewCell.h; path = Model/VPTPostTableViewCell.h; sourceTree = "<group>"; };
 		35942B091C89F1BE00CD8BE6 /* VPTPostTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTPostTableViewCell.m; path = Model/VPTPostTableViewCell.m; sourceTree = "<group>"; };
 		35AFB37B1C9EBE1C000A8B0C /* VPTUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTUtil.h; path = Infrustructure/VPTUtil.h; sourceTree = "<group>"; };
@@ -219,6 +222,14 @@
 			name = Fonts;
 			sourceTree = "<group>";
 		};
+		358D12F41D72C9BC005645AB /* vendor */ = {
+			isa = PBXGroup;
+			children = (
+				350456D71D71F86300977E5D /* FlatUIKit */,
+			);
+			name = vendor;
+			sourceTree = "<group>";
+		};
 		35D443A01C847019001B4D02 = {
 			isa = PBXGroup;
 			children = (
@@ -240,11 +251,11 @@
 		35D443AB1C847019001B4D02 /* omega */ = {
 			isa = PBXGroup;
 			children = (
-				350456D71D71F86300977E5D /* FlatUIKit */,
 				35D443E01C8470D3001B4D02 /* Model */,
 				35D443E81C847490001B4D02 /* Infrustructure */,
 				35D443DF1C8470C9001B4D02 /* Controller */,
 				35D443B81C847019001B4D02 /* Assets.xcassets */,
+				358D12F41D72C9BC005645AB /* vendor */,
 				35D443AC1C847019001B4D02 /* Supporting Files */,
 			);
 			path = omega;
@@ -292,6 +303,8 @@
 				35942B091C89F1BE00CD8BE6 /* VPTPostTableViewCell.m */,
 				35E67B421D71E852009E707C /* VPTTopTenTableViewCell.h */,
 				35E67B431D71E852009E707C /* VPTTopTenTableViewCell.m */,
+				358D12F51D72CD2E005645AB /* VPTSimpleCell.h */,
+				358D12F61D72CD2E005645AB /* VPTSimpleCell.m */,
 				35E67B3F1D71D7E3009E707C /* VPTTopic.h */,
 				35E67B401D71D7E3009E707C /* VPTTopic.m */,
 				358D12EE1D72BF43005645AB /* VPTTopicDetail.h */,
@@ -497,6 +510,7 @@
 				350457021D71F86300977E5D /* FUIButton.m in Sources */,
 				35F1EDA51C95362800878E71 /* VPTPersonalViewController.m in Sources */,
 				350457081D71F86300977E5D /* NSString+Icons.m in Sources */,
+				358D12F71D72CD2E005645AB /* VPTSimpleCell.m in Sources */,
 				3504570C1D71F86300977E5D /* UIImage+FlatUI.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

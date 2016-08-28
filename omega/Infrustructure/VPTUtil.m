@@ -10,6 +10,13 @@
 
 @implementation VPTUtil
 
++ (NSDate *)dateFromStandardString:(NSString *)date {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"]];
+    [formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss"];
+    return [formatter dateFromString:date];
+}
+
 + (NSDate *)dateFromString:(NSString *)date {
     date = [date substringToIndex:[date length] - 4];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];

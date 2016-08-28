@@ -12,6 +12,7 @@
 #import "VPTBoardListViewController.h"
 #import "VPTTopicListViewController.h"
 #import "VPTServiceManager.h"
+#import "VPTSimpleCell.h"
 
 @interface VPTBoardListViewController ()
 @property (nonatomic, strong) UITableView *tableView;
@@ -49,6 +50,11 @@
     [_tableView setDelegate:self];
     [_tableView setDataSource:self];
     [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
+    [_tableView registerClass:[VPTSimpleCell class] forCellReuseIdentifier:@"VPTSimpleCell"];
+    UIEdgeInsets adjustForTabbarInsets = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController.tabBar.frame), 0);
+    [_tableView setContentInset:adjustForTabbarInsets];
+    [_tableView setScrollIndicatorInsets:adjustForTabbarInsets];
+
     [self.view addSubview:_tableView];
     [self updateViewConstraints];
 }
@@ -82,24 +88,28 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"VPTBoardViewCell"];
+    VPTSimpleCell *cell = (VPTSimpleCell *)[tableView dequeueReusableCellWithIdentifier:@"VPTSimpleCell"];
     
     if (_boardListViewType == BoardListViewTypeAllFavouriteBoards) {
         [cell.textLabel setText:[VPTServiceManager getAllBoardDictionary][_boards[indexPath.row][@"boardId"]][@"desc"]];
     } else if (_boardListViewType == BoardListViewTypeAllSections) {
-        [cell.textLabel setText:[[[_sections objectAtIndex:indexPath.row] objectForKey:@"section"] objectForKey:@"desc"]];
+        cell.title = [[[_sections objectAtIndex:indexPath.row] objectForKey:@"section"] objectForKey:@"desc"];
+        cell.type = VPTSimpleCellFolder;
     } else {
-        [cell.textLabel setText:[[_boards objectAtIndex:indexPath.row] objectForKey:@"desc"]];
+        cell.title = [[_boards objectAtIndex:indexPath.row] objectForKey:@"desc"];
         if ([[_boards objectAtIndex:indexPath.row] objectForKey:@"cate"]) {
-            [cell.detailTextLabel setText:[[_boards objectAtIndex:indexPath.row] objectForKey:@"cate"]];
+            cell.detail = [[_boards objectAtIndex:indexPath.row] objectForKey:@"cate"];
         }
         if ([[[_boards objectAtIndex:indexPath.row] objectForKey:@"dir"] isEqualToString:@"1"]) {
-            [cell setBackgroundColor:[UIColor colorWithRed:0 green:0.2 blue:0.8 alpha:1]];
+            cell.type = VPTSimpleCellFolder;
+        } else {
+            cell.type = VPTSimpleCellBoard;
         }
     }
     if (_boardListViewType == BoardListViewTypeRecommandedBoardsForSection && indexPath.row == 0) {
         [cell setBackgroundColor:[UIColor colorWithRed:0 green:0.2 blue:0.2 alpha:0.3]];
     }
+    [cell setNeedsUpdateConstraints];
     return cell;
 }
 

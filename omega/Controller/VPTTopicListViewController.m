@@ -6,13 +6,15 @@
 //  Copyright © 2016 vaputa. All rights reserved.
 //
 
-#import "Masonry/Masonry.h"
-#import "Ono.h"
+#import <Masonry/Masonry.h>
+#import <NSDate_TimeAgo/NSDate+TimeAgo.h>
+#import <Ono/Ono.h>
 
 #import "VPTTopicListViewController.h"
 #import "VPTTopicViewController.h"
 #import "VPTServiceManager.h"
-
+#import "VPTSimpleCell.h"
+#import "VPTUtil.h"
 @interface VPTTopicListViewController ()
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *topicArray;
@@ -42,6 +44,8 @@
     [_tableView setDelegate:self];
     [_tableView setDataSource:self];
     [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
+    [_tableView registerClass:[VPTSimpleCell class] forCellReuseIdentifier:@"VPTSimpleCell"];
+    
     _tableView.bounces = NO;
     if (_topicListViewType == VPTTopicListViewTypeDataFromBoard) {
         _footerView = [self tableFooterView];
@@ -154,19 +158,22 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"TOPTenCell"];
+    VPTSimpleCell *cell = (VPTSimpleCell *)[tableView dequeueReusableCellWithIdentifier:@"VPTSimpleCell"];
     NSDictionary *cellInfo = [_topicArray objectAtIndex:indexPath.row];
-    [cell.textLabel setText:[cellInfo objectForKey:@"title"]];
+    cell.title = [cellInfo objectForKey:@"title"];
     
     if (_topicListViewType == VPTTopicListViewTypeDataFromBoard) {
-        [cell.detailTextLabel setText:[cellInfo objectForKey:@"board"]];
+        cell.detail = [[VPTUtil dateFromStandardString:cellInfo[@"attributes"][@"time"]] timeAgo];
         if (cellInfo[@"attributes"][@"sticky"] != nil) {
-            [cell setBackgroundColor: [UIColor colorWithRed:0.2 green:0.2 blue:0.5 alpha:0.5]];
+            cell.type = VPTSimpleCellTop;
+        } else {
+            cell.type = VPTSimpleCellTopic;
         }
     } else if (_topicListViewType ==VPTTopicListViewTypeDataFromFavourite) {
         NSString *boardId = [cellInfo objectForKey:@"boardId"];
         [cell.detailTextLabel setText:[VPTServiceManager getAllBoardDictionary][boardId][@"desc"]];
     }
+    [cell setNeedsUpdateConstraints];
     return cell;
 }
 
