@@ -430,7 +430,7 @@ static NSArray *cacheBoardArray;
 + (void)fetchTopicWithBoard:(NSString *)board start:(NSUInteger)start completionHandler:(void (^)(id result, NSError *error))completionHandler {
     NSString *url = nil;
     if (start) {
-        url = [NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/tdoc?new=1&board=%@&start=%lu", board, (unsigned long)start];
+        url = [NSString stringWithFormat:@"https://bbs.fudan.edu.cn/bbs/tdoc?new=1&board=%@&start=%lu", board, (unsigned long)start];
     } else {
         url = [NSString stringWithFormat:@"https://bbs.fudan.edu.cn/bbs/tdoc?board=%@", board];
     }

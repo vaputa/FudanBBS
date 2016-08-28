@@ -98,7 +98,7 @@
             make.left.equalTo(_titleLabel);
             make.right.equalTo(self.contentView);
             make.top.equalTo(_titleLabel.mas_bottom);
-            make.height.equalTo(self.contentView).multipliedBy(0.3);
+            make.height.equalTo(self.contentView).multipliedBy(0.35);
         }];
     }
 }

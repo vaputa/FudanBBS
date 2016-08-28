@@ -35,13 +35,17 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     _tableView = [[UITableView alloc] init];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     [_tableView registerClass:[VPTTopTenTableViewCell class] forCellReuseIdentifier:@"TopTenCell"];
     [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
 
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    [_tableView addSubview:refreshControl];
+    
     [self.navigationController.navigationBar configureFlatNavigationBarWithColor:[UIColor midnightBlueColor]];
     self.navigationController.navigationBar.titleTextAttributes = @{NSFontAttributeName:[UIFont boldFlatFontOfSize:18],
                                                                     NSForegroundColorAttributeName: [UIColor whiteColor]};
@@ -71,9 +75,24 @@
     }];
 }
 
+- (void)refresh:(UIRefreshControl *)refreshControl {
+    [refreshControl endRefreshing];
+    [VPTServiceManager fetchTopTenDataWithCompletionHandler:^(id result, NSError *error) {
+        if (!error) {
+            _dataSource = result;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_tableView reloadData];
+            });
+        } else {
+            
+        }
+    }];
+}
+
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self setTitle:@"今日十大"];
+    self.tabBarController.title = @"今日十大";
 }
 
 - (void)updateViewConstraints{

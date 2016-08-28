@@ -51,6 +51,7 @@
     _tableView.bounces = NO;
     if (_topicListViewType == VPTTopicListViewTypeDataFromBoard) {
         _footerView = [self tableFooterView];
+        [_footerView setHidden:YES];
         [_tableView setTableFooterView:_footerView];
         [VPTServiceManager fetchTopicWithBoard:_boardId start:0 completionHandler:^(id result, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
