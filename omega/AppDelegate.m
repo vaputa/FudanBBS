@@ -51,7 +51,7 @@
 //    UIViewController *svc = [VPTSettingsViewController new];
     
     [ttvc setTabBarItem:[[UITabBarItem alloc] initWithTitle:@"今日十大" image:[UIImage imageNamed:@"icon_hot_unselected"] selectedImage:[UIImage imageNamed:@"icon_hot_selected"]]];
-//    [bvc setTabBarItem:[[UITabBarItem alloc] initWithTitle:@"所有板块" image:[UIImage imageNamed:@"icon_directory"] selectedImage:[UIImage imageNamed:@"icon_directory"]]];
+    [bvc setTabBarItem:[[UITabBarItem alloc] initWithTitle:@"所有板块" image:[UIImage imageNamed:@"icon_directory"] selectedImage:[UIImage imageNamed:@"icon_directory"]]];
 //    [pvc setTabBarItem:[[UITabBarItem alloc] initWithTitle:@"个人中心" image:[UIImage imageNamed:@"icon_person"] selectedImage:[UIImage imageNamed:@"icon_person"]]];
 //    [svc setTabBarItem:[[UITabBarItem alloc] initWithTitle:@"设置" image:[UIImage imageNamed:@"icon_settings"] selectedImage:[UIImage imageNamed:@"icon_settings"]]];
 //    [tabBarController setViewControllers:@[ttvc, bvc, pvc, svc]];

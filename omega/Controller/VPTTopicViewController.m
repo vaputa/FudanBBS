@@ -117,7 +117,7 @@
 }
 
 - (UIView *)tableHeaderView {
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 30)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 50)];
     [label setNumberOfLines:0];
     [label setAttributedText:[[NSAttributedString alloc] initWithString:_postTitle attributes:@{NSForegroundColorAttributeName:[UIColor wetAsphaltColor],
                                                                                                 NSFontAttributeName:[UIFont boldFlatFontOfSize:18]}]];

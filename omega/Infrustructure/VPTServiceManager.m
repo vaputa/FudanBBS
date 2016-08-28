@@ -329,4 +329,75 @@ static NSArray *boardArray;
         }
     }];
 }
+
++ (void)fetchBoardListWithSection:(NSString *)section completionHandler:(void (^)(id result, NSError *error))completionHandler {
+    NSString *url = [NSString stringWithFormat:@"https://bbs.fudan.edu.cn/bbs/boa?s=%@", section];
+    [VPTNetworkService requestWithUrlString:url method:@"GET" completionHandler:^(NSString *response, NSError *error) {
+        if (!error) {
+            response = [response stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
+            ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[response dataUsingEncoding:NSUTF8StringEncoding] error:nil];
+            NSMutableArray *result = [[NSMutableArray alloc] init];
+            for (ONOXMLElement *boardEle in [[document rootElement] children]){
+                if ([[boardEle tag] isEqualToString:@"brd"]) {
+                    [result addObject:[boardEle attributes]];
+                }
+            }
+            [result sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+                return -[[obj1 objectForKey:@"dir"] compare:[obj2 objectForKey:@"dir"]];
+            }];
+            completionHandler(result, error);
+        } else {
+            completionHandler(nil, error);
+        }
+    }];
+}
+
++ (void)fetchSubdirectoryWithBoard:(NSString *)board completionHandler:(void (^)(id result, NSError *error))completionHandler {
+    NSString *url = [NSString stringWithFormat:@"https://bbs.fudan.edu.cn/bbs/boa?board=%@", board];
+   [VPTNetworkService requestWithUrlString:url method:@"GET" completionHandler:^(NSString *response, NSError *error) {
+        if (!error) {
+            response = [response stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
+            ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[response dataUsingEncoding:NSUTF8StringEncoding] error:nil];
+            NSMutableArray *result = [[NSMutableArray alloc] init];
+            for (ONOXMLElement *boardEle in [[document rootElement] children]){
+                if ([[boardEle tag] isEqualToString:@"brd"]) {
+                    [result addObject:[boardEle attributes]];
+                }
+            }
+            [result sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+                return -[[obj1 objectForKey:@"dir"] compare:[obj2 objectForKey:@"dir"]];
+            }];
+            completionHandler(result, error);
+        } else {
+            completionHandler(nil, error);
+        }
+    }];
+}
+
+
++ (void)fetchAllBoardSectionsWithcompletionHandler:(void (^)(id result, NSError *error))completionHandler {
+    [VPTNetworkService requestWithUrlString:@"https://bbs.fudan.edu.cn/bbs/sec" method:@"GET" completionHandler:^(NSString *response, NSError *error) {
+        if (!error) {
+            response = [response stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
+            ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[response dataUsingEncoding:NSUTF8StringEncoding] error:nil];
+            NSMutableArray *result = [[NSMutableArray alloc] init];
+            for (ONOXMLElement *sectionEle in [[document rootElement] children]){
+                if ([[sectionEle tag] isEqualToString:@"sec"]) {
+                    NSMutableDictionary *section = [NSMutableDictionary new];
+                    [section setObject:[sectionEle attributes] forKey:@"section"];
+                    [section setObject:[NSMutableArray new] forKey:@"boards"];
+                    for (ONOXMLElement *boardEle in [sectionEle children]) {
+                        [[section objectForKey:@"boards"] addObject:[boardEle attributes]];
+                    }
+                    [[section objectForKey:@"boards"] insertObject:@{@"desc":@"所有子版块"} atIndex:0];
+                    [result addObject:section];
+                }
+            }
+            completionHandler(result, nil);
+        } else {
+            completionHandler(nil, error);
+        }
+    }];
+}
+
 @end

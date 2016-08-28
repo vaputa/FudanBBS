@@ -9,6 +9,7 @@
 #import "Masonry/Masonry.h"
 #import "Ono.h"
 
+#import "FlatUIKit.h"
 #import "VPTBoardListViewController.h"
 #import "VPTTopicListViewController.h"
 #import "VPTServiceManager.h"
@@ -16,12 +17,11 @@
 
 @interface VPTBoardListViewController ()
 @property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) NSMutableArray *sections;
-@property (nonatomic, strong) NSMutableArray *boards;
 @property (nonatomic, strong) NSString *boardId;
 @property (nonatomic, strong) NSString *boardDesc;
 @property (nonatomic, strong) NSString *sectionId;
 @property (nonatomic, strong) NSString *sectionDesc;
+@property (nonatomic, strong) NSArray *dataSource;
 @end
 
 @implementation VPTBoardListViewController
@@ -37,15 +37,23 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    id callback = ^(id result, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _dataSource = result;
+            [_tableView reloadData];
+        });
+    };
     if (_boardListViewType == BoardListViewTypeAllSections) {
-        [VPTNetworkService request:@"http://bbs.fudan.edu.cn/bbs/sec" delegate:self];
+        [VPTServiceManager fetchAllBoardSectionsWithcompletionHandler:callback];
     } else if (_boardListViewType == BoardListViewTypeAllBoardsForSection) {
-        [VPTNetworkService request:[NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/boa?s=%@", _sectionId] delegate:self];
+        [VPTServiceManager fetchBoardListWithSection:_sectionId completionHandler:callback];
     } else if (_boardListViewType == BoardListViewTypeSubdirectoryForSection) {
-        [VPTNetworkService request:[NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/boa?board=%@", _boardId] delegate:self];
+        [VPTServiceManager fetchSubdirectoryWithBoard:_boardId completionHandler:callback];
     } else if (_boardListViewType == BoardListViewTypeAllFavouriteBoards) {
-        _boards = [[NSMutableArray alloc] initWithArray:[VPTServiceManager getFavouriteBoardList]];
+        _dataSource = [[NSMutableArray alloc] initWithArray:[VPTServiceManager getFavouriteBoardList]];
     }
+    
     _tableView = [[UITableView alloc] init];
     [_tableView setDelegate:self];
     [_tableView setDataSource:self];
@@ -63,7 +71,7 @@
     [super viewWillAppear:animated];
     if (_tableView) {
         if (_boardListViewType == BoardListViewTypeAllFavouriteBoards) {
-            _boards = [[NSMutableArray alloc] initWithArray:[VPTServiceManager getFavouriteBoardList]];
+            _dataSource = [[NSMutableArray alloc] initWithArray:[VPTServiceManager getFavouriteBoardList]];
             [_tableView reloadData];
         }
     }
@@ -89,46 +97,47 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     VPTSimpleCell *cell = (VPTSimpleCell *)[tableView dequeueReusableCellWithIdentifier:@"VPTSimpleCell"];
-    
+    id cellInfo = _dataSource[indexPath.row];
     if (_boardListViewType == BoardListViewTypeAllFavouriteBoards) {
-        [cell.textLabel setText:[VPTServiceManager getAllBoardDictionary][_boards[indexPath.row][@"boardId"]][@"desc"]];
+        cell.title = [VPTServiceManager getAllBoardDictionary][cellInfo[@"boardId"]][@"desc"];
     } else if (_boardListViewType == BoardListViewTypeAllSections) {
-        cell.title = [[[_sections objectAtIndex:indexPath.row] objectForKey:@"section"] objectForKey:@"desc"];
+        cell.title = cellInfo[@"section"][@"desc"];
         cell.type = VPTSimpleCellFolder;
     } else {
-        cell.title = [[_boards objectAtIndex:indexPath.row] objectForKey:@"desc"];
-        if ([[_boards objectAtIndex:indexPath.row] objectForKey:@"cate"]) {
-            cell.detail = [[_boards objectAtIndex:indexPath.row] objectForKey:@"cate"];
+        cell.title = cellInfo[@"desc"];
+        if (cellInfo[@"cate"]) {
+            cell.detail = cellInfo[@"cate"];
         }
-        if ([[[_boards objectAtIndex:indexPath.row] objectForKey:@"dir"] isEqualToString:@"1"]) {
+        if ([cellInfo[@"dir"] isEqualToString:@"1"]) {
             cell.type = VPTSimpleCellFolder;
         } else {
             cell.type = VPTSimpleCellBoard;
         }
     }
-    if (_boardListViewType == BoardListViewTypeRecommandedBoardsForSection && indexPath.row == 0) {
-        [cell setBackgroundColor:[UIColor colorWithRed:0 green:0.2 blue:0.2 alpha:0.3]];
-    }
+//    if (_boardListViewType == BoardListViewTypeRecommandedBoardsForSection && indexPath.row == 0) {
+//        [cell configureFlatCellWithColor:[UIColor greenSeaColor] selectedColor:[UIColor cloudsColor] roundingCorners:UIRectCornerAllCorners];
+//    } else {
+//        [cell configureFlatCellWithColor:[UIColor peterRiverColor] selectedColor:[UIColor cloudsColor] roundingCorners:UIRectCornerAllCorners];
+//    }
     [cell setNeedsUpdateConstraints];
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    id cellInfo = _dataSource[indexPath.row];
     [cell setSelected:NO];
-    NSUInteger row = indexPath.row;
     if (_boardListViewType ==BoardListViewTypeAllFavouriteBoards) {
-        NSDictionary *cellInfo = [VPTServiceManager getAllBoardDictionary][_boards[indexPath.row][@"boardId"]];
+        NSDictionary *cellInfo = [VPTServiceManager getAllBoardDictionary][cellInfo[@"boardId"]];
         VPTTopicListViewController *tlvc = [VPTTopicListViewController new];
         [tlvc setBoardId:cellInfo[@"title"]];
         [tlvc setBoardName:cellInfo[@"desc"]];
         [self.navigationController pushViewController:tlvc animated:YES];
     } if (_boardListViewType == BoardListViewTypeAllSections) {
         VPTBoardListViewController *bvc = [VPTBoardListViewController new];
-        NSDictionary *dictionary = [_sections objectAtIndex:row];
-        [bvc setBoards:dictionary[@"boards"]];
-        [bvc setSectionId:dictionary[@"section"][@"id"]];
-        [bvc setSectionDesc:dictionary[@"section"][@"desc"]];
+        [bvc setDataSource:cellInfo[@"boards"]];
+        [bvc setSectionId:cellInfo[@"section"][@"id"]];
+        [bvc setSectionDesc:cellInfo[@"section"][@"desc"]];
         [bvc setBoardListViewType:BoardListViewTypeRecommandedBoardsForSection];
         [self.navigationController pushViewController:bvc animated:YES];
     } else if (_boardListViewType == BoardListViewTypeRecommandedBoardsForSection) {
@@ -140,66 +149,28 @@
             [self.navigationController pushViewController:bvc animated:YES];
         } else {
             VPTTopicListViewController *tlvc = [VPTTopicListViewController new];
-            [tlvc setBoardName:_boards[row][@"desc"]];
-            [tlvc setBoardId:_boards[row][@"name"]];
+            [tlvc setBoardName:cellInfo[@"desc"]];
+            [tlvc setBoardId:cellInfo[@"name"]];
             [self.navigationController pushViewController:tlvc animated:YES];
         }
     } else if (_boardListViewType == BoardListViewTypeAllBoardsForSection || _boardListViewType == BoardListViewTypeSubdirectoryForSection){
-        if ([_boards[row][@"dir"] isEqualToString:@"1"]) {
+        if ([cellInfo[@"dir"] isEqualToString:@"1"]) {
             VPTBoardListViewController *bvc = [VPTBoardListViewController new];
             [bvc setBoardListViewType:BoardListViewTypeSubdirectoryForSection];
-            [bvc setBoardId:_boards[row][@"title"]];
-            [bvc setBoardDesc:_boards[row][@"desc"]];
+            [bvc setBoardId:cellInfo[@"title"]];
+            [bvc setBoardDesc:cellInfo[@"desc"]];
             [self.navigationController pushViewController:bvc animated:YES];
         } else {
             VPTTopicListViewController *tlvc = [VPTTopicListViewController new];
-            [tlvc setBoardId:_boards[row][@"title"]];
-            [tlvc setBoardName:_boards[row][@"desc"]];
+            [tlvc setBoardId:cellInfo[@"title"]];
+            [tlvc setBoardName:cellInfo[@"desc"]];
             [self.navigationController pushViewController:tlvc animated:YES];
         }
     }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (_boardListViewType == BoardListViewTypeAllFavouriteBoards) {
-        return [_boards count];
-    } else if (_boardListViewType == BoardListViewTypeAllSections) {
-        return [_sections count];
-    } else {
-        return [_boards count];
-    }
-}
-
-- (void)receiveData:(NSString *)data {
-    data = [data stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
-    ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[data dataUsingEncoding:NSUTF8StringEncoding] error:nil];
-    if (_boardListViewType == BoardListViewTypeAllSections) {
-        _sections = [[NSMutableArray alloc] init];
-        for (ONOXMLElement *sectionEle in [[document rootElement] children]){
-            if ([[sectionEle tag] isEqualToString:@"sec"]) {
-                NSMutableDictionary *section = [NSMutableDictionary new];
-                [section setObject:[sectionEle attributes] forKey:@"section"];
-                [section setObject:[NSMutableArray new] forKey:@"boards"];
-                for (ONOXMLElement *boardEle in [sectionEle children]) {
-                    [[section objectForKey:@"boards"] addObject:[boardEle attributes]];
-                }
-                [[section objectForKey:@"boards"] insertObject:@{@"desc":@"所有子版块"} atIndex:0];
-                [_sections addObject:section];
-            }
-        }
-    } else {
-        _boards = [[NSMutableArray alloc] init];
-        for (ONOXMLElement *boardEle in [[document rootElement] children]){
-            if ([[boardEle tag] isEqualToString:@"brd"]) {
-                [_boards addObject:[boardEle attributes]];
-            }
-        }
-        [_boards sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-            return -[[obj1 objectForKey:@"dir"] compare:[obj2 objectForKey:@"dir"]];
-        }];
-    }
-    [_tableView reloadData];
-        
+    return [_dataSource count];
 }
 
 @end

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "VPTNetworkService.h"
 
-@interface VPTBoardListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, DataReceiveDelegate>
+@interface VPTBoardListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 enum BoardListViewType {
     BoardListViewTypeAllSections,
     BoardListViewTypeRecommandedBoardsForSection,
