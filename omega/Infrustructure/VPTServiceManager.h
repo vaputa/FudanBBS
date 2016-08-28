@@ -45,4 +45,6 @@
 + (void)fetchBoardListWithSection:(NSString *)section completionHandler:(void (^)(id result, NSError *error))completionHandler;
 + (void)fetchSubdirectoryWithBoard:(NSString *)board completionHandler:(void (^)(id result, NSError *error))completionHandler;
 + (void)fetchAllBoardSectionsWithcompletionHandler:(void (^)(id result, NSError *error))completionHandler;
++ (void)fetchTopicWithBoard:(NSString *)board start:(NSUInteger)start completionHandler:(void (^)(id result, NSError *error))completionHandler;
+
 @end

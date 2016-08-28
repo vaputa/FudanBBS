@@ -9,19 +9,21 @@
 #import <Masonry/Masonry.h>
 #import <NSDate_TimeAgo/NSDate+TimeAgo.h>
 #import <Ono/Ono.h>
+#import "FlatUIKit.h"
 
 #import "VPTTopicListViewController.h"
 #import "VPTTopicViewController.h"
 #import "VPTServiceManager.h"
 #import "VPTSimpleCell.h"
 #import "VPTUtil.h"
+
 @interface VPTTopicListViewController ()
 @property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) NSMutableArray *topicArray;
-@property (nonatomic, strong) UIButton *prevPage;
-@property (nonatomic, strong) UIButton *nextPage;
+@property (nonatomic, strong) FUIButton *prevPage;
+@property (nonatomic, strong) FUIButton *nextPage;
 @property (nonatomic, strong) UIView *footerView;
 @property (nonatomic, strong) UIButton *btnFavourite;
+@property (nonatomic, strong) NSArray *dataSource;
 @property (nonatomic) BOOL isFavourite;
 @end
 
@@ -50,9 +52,13 @@
     if (_topicListViewType == VPTTopicListViewTypeDataFromBoard) {
         _footerView = [self tableFooterView];
         [_tableView setTableFooterView:_footerView];
-        [VPTNetworkService request:[self urlForBoard:_boardId] delegate:self];
+        [VPTServiceManager fetchTopicWithBoard:_boardId start:0 completionHandler:^(id result, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self reloadTableData:result];
+            });
+        }];
     } else if (_topicListViewType == VPTTopicListViewTypeDataFromFavourite) {
-        _topicArray = [[NSMutableArray alloc] initWithArray:[VPTServiceManager getFavouriteTopicList]];
+        _dataSource = [[NSMutableArray alloc] initWithArray:[VPTServiceManager getFavouriteTopicList]];
     }
     [self.view addSubview:_tableView];
     
@@ -94,23 +100,32 @@
 }
 
 - (UIView *)tableFooterView {
-    _footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 30)];
+    if (_footerView) {
+        return _footerView;
+    }
+    _footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 50)];
     
-    NSDictionary *normal = [NSDictionary dictionaryWithObjects:[[NSArray alloc] initWithObjects:[UIFont systemFontOfSize:14], [UIColor blackColor], nil]
-                                                       forKeys:[[NSArray alloc] initWithObjects:NSFontAttributeName, NSForegroundColorAttributeName, nil]];
+    _prevPage = [[FUIButton alloc] init];
+    _nextPage = [[FUIButton alloc] init];
     
-    _prevPage = [[UIButton alloc] init];
-    _nextPage = [[UIButton alloc] init];
+    _prevPage.buttonColor = [UIColor turquoiseColor];
+    _prevPage.shadowColor = [UIColor greenSeaColor];
+    _prevPage.shadowHeight = 3.0f;
+    _prevPage.cornerRadius = 6.0f;
+    _prevPage.titleLabel.font = [UIFont boldFlatFontOfSize:16];
+    [_prevPage setTitleColor:[UIColor cloudsColor] forState:UIControlStateNormal];
+    [_prevPage setTitleColor:[UIColor cloudsColor] forState:UIControlStateHighlighted];
     
-    [_prevPage setImage:[UIImage imageNamed:@"icon_last"] forState:UIControlStateNormal];
-    [_nextPage setImage:[UIImage imageNamed:@"icon_next"] forState:UIControlStateNormal];
-
-    [_prevPage setAttributedTitle:[[NSAttributedString alloc] initWithString:@"上一页" attributes:normal] forState:UIControlStateNormal];
-    [_nextPage setAttributedTitle:[[NSAttributedString alloc] initWithString:@"下一页" attributes:normal] forState:UIControlStateNormal];
-
-    _nextPage.transform = CGAffineTransformMakeScale(-1.0, 1.0);
-    _nextPage.titleLabel.transform = CGAffineTransformMakeScale(-1.0, 1.0);
-    _nextPage.imageView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+    [_prevPage setTitle:@"上一页" forState:UIControlStateNormal];
+    [_nextPage setTitle:@"下一页" forState:UIControlStateNormal];
+    
+    _nextPage.buttonColor = [UIColor turquoiseColor];
+    _nextPage.shadowColor = [UIColor greenSeaColor];
+    _nextPage.shadowHeight = 3.0f;
+    _nextPage.cornerRadius = 6.0f;
+    _nextPage.titleLabel.font = [UIFont boldFlatFontOfSize:16];
+    [_nextPage setTitleColor:[UIColor cloudsColor] forState:UIControlStateNormal];
+    [_nextPage setTitleColor:[UIColor cloudsColor] forState:UIControlStateHighlighted];
     
     [_prevPage addTarget:self action:@selector(goToPrevPage) forControlEvents:UIControlEventTouchUpInside];
     [_nextPage addTarget:self action:@selector(goToNextPage) forControlEvents:UIControlEventTouchUpInside];
@@ -119,47 +134,50 @@
     [_footerView addSubview:_nextPage];
     
     [_prevPage mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo(_footerView).dividedBy(2.0);
-        make.height.equalTo(_footerView);
-        make.left.equalTo(_footerView);
-        make.top.equalTo(_footerView);
+        make.width.equalTo(_footerView).dividedBy(3.0);
+        make.height.equalTo(_footerView).offset(-10);
+        make.right.equalTo(_footerView.mas_centerX);
+        make.centerY.equalTo(_footerView);
     }];
     [_nextPage mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo(_footerView).dividedBy(2.0);
-        make.height.equalTo(_footerView);
-        make.right.equalTo(_footerView);
-        make.top.equalTo(_footerView);
+        make.width.equalTo(_footerView).dividedBy(3.0);
+        make.height.equalTo(_footerView).offset(-10);
+        make.left.equalTo(_footerView.mas_centerX);
+        make.centerY.equalTo(_footerView);
     }];
     return _footerView;
 }
 
 - (void)goToPrevPage {
-    [VPTNetworkService request:[self urlForPrevPageWithBoard:_boardId start:_boardStart - 20] delegate:self];
+    [VPTServiceManager fetchTopicWithBoard:_boardId start:(_boardStart - 20 <= 0 ? 1 : _boardStart - 20) completionHandler:^(id result, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self reloadTableData:result];
+        });
+    }];
 }
 
 - (void)goToNextPage {
-    [VPTNetworkService request:[self urlForNextPageWithBoard:_boardId start:_boardStart + 20] delegate:self];
+    [VPTServiceManager fetchTopicWithBoard:_boardId start:_boardStart + 20 completionHandler:^(id result, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self reloadTableData:result];
+        });
+    }];
 }
 
-- (NSString *)urlForBoard:(NSString *)board {
-    return [NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/tdoc?board=%@", board];
+- (void)reloadTableData:(NSDictionary *)result {
+    _dataSource = result[@"dataSource"];
+    _boardStart = [result[@"start"] integerValue];
+    _boardTotal = [result[@"total"] integerValue];
+    [_nextPage setHidden:!(_boardStart + 20 <= _boardTotal)];
+    [_prevPage setHidden:!(_boardStart > 0)];
+    [_footerView setHidden:!([_nextPage isEnabled] || [_prevPage isEnabled])];
+    [_tableView setContentOffset:CGPointMake(0, -_tableView.contentInset.top)];
+    [_tableView reloadData];
 }
-
-- (NSString *)urlForPrevPageWithBoard:(NSString *)board start:(NSInteger)start{
-    if (start <= 0) {
-        start = 1;
-    }
-    return [NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/tdoc?new=1&board=%@&start=%ld", board, (long)start];
-}
-
-- (NSString *)urlForNextPageWithBoard:(NSString *)board start:(NSInteger)start{
-    return [NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/tdoc?new=1&board=%@&start=%ld", board, (long)start];
-}
-
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
     VPTSimpleCell *cell = (VPTSimpleCell *)[tableView dequeueReusableCellWithIdentifier:@"VPTSimpleCell"];
-    NSDictionary *cellInfo = [_topicArray objectAtIndex:indexPath.row];
+    NSDictionary *cellInfo = _dataSource[indexPath.row];
     cell.title = [cellInfo objectForKey:@"title"];
     
     if (_topicListViewType == VPTTopicListViewTypeDataFromBoard) {
@@ -170,7 +188,7 @@
             cell.type = VPTSimpleCellTopic;
         }
     } else if (_topicListViewType ==VPTTopicListViewTypeDataFromFavourite) {
-        NSString *boardId = [cellInfo objectForKey:@"boardId"];
+        NSString *boardId = cellInfo[@"boardId"];
         [cell.detailTextLabel setText:[VPTServiceManager getAllBoardDictionary][boardId][@"desc"]];
     }
     [cell setNeedsUpdateConstraints];
@@ -179,50 +197,23 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    NSDictionary *dict = [_topicArray objectAtIndex:indexPath.row];
+    NSDictionary *cellInfo = _dataSource[indexPath.row];
     [cell setSelected:NO];
     VPTTopicViewController *tvc = [[VPTTopicViewController alloc] init];
-    [tvc setGid:[dict objectForKey:@"id"]];
+    [tvc setGid:cellInfo[@"id"]];
     if (_topicListViewType == VPTTopicListViewTypeDataFromBoard) {
         [tvc setBoardName:_boardName];
         [tvc setBoardId:_boardId];
     } else if (_topicListViewType == VPTTopicListViewTypeDataFromFavourite) {
-        [tvc setBoardId:[dict objectForKey:@"boardId"]];
-        [tvc setBoardName:[dict objectForKey:@"boardName"]];
+        [tvc setBoardId:cellInfo[@"boardId"]];
+        [tvc setBoardName:cellInfo[@"boardName"]];
     }
-    [tvc setPostTitle:[dict objectForKey:@"title"]];
+    [tvc setPostTitle:cellInfo[@"title"]];
     [self.navigationController pushViewController:tvc animated:YES];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [_topicArray count];
+    return [_dataSource count];
 }
-
-- (void)receiveData:(NSString *)data{
-    data = [data stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
-    ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[data dataUsingEncoding:NSUTF8StringEncoding] error:nil];
-    _topicArray = [[NSMutableArray alloc] init];
-    for (ONOXMLElement *topic in [document.rootElement children]){
-        if ([[topic tag] isEqualToString:@"po"]){
-            [_topicArray insertObject:@{
-                                     @"title":[topic stringValue],
-                                     @"id":[[topic attributes] objectForKey:@"id"],
-                                     @"attributes":[topic attributes]
-                                     }
-                              atIndex:0
-             ];
-        } else if ([[topic tag] isEqualToString:@"brd"]){
-            _boardTotal = [[topic attributes][@"total"] integerValue];
-            _boardStart = [[topic attributes][@"start"] integerValue];
-        }
-    }
-    [_nextPage setHidden:!(_boardStart + 20 <= _boardTotal)];
-    [_prevPage setHidden:!(_boardStart > 0)];
-    [_footerView setHidden:!([_nextPage isEnabled] || [_prevPage isEnabled])];
-    [_tableView reloadData];
-    [_tableView setContentOffset:CGPointMake(0, -_tableView.contentInset.top)];
-}
-
-
 
 @end

@@ -400,4 +400,39 @@ static NSArray *boardArray;
     }];
 }
 
++ (void)fetchTopicWithBoard:(NSString *)board start:(NSUInteger)start completionHandler:(void (^)(id result, NSError *error))completionHandler {
+    NSString *url = nil;
+    if (start) {
+        url = [NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/tdoc?new=1&board=%@&start=%lu", board, (unsigned long)start];
+    } else {
+        url = [NSString stringWithFormat:@"https://bbs.fudan.edu.cn/bbs/tdoc?board=%@", board];
+    }
+    [VPTNetworkService requestWithUrlString:url method:@"GET" completionHandler:^(NSString *response, NSError *error) {
+        if (!error) {
+            response = [response stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
+            ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[response dataUsingEncoding:NSUTF8StringEncoding] error:nil];
+            NSMutableDictionary *result = [NSMutableDictionary new];
+            NSMutableArray *dataSource = [NSMutableArray new];
+            for (ONOXMLElement *topic in [document.rootElement children]){
+                if ([[topic tag] isEqualToString:@"po"]){
+                    [dataSource insertObject:@{
+                                                @"title":[topic stringValue],
+                                                @"id":[[topic attributes] objectForKey:@"id"],
+                                                @"attributes":[topic attributes]
+                                                }
+                                      atIndex:0
+                     ];
+                } else if ([[topic tag] isEqualToString:@"brd"]){
+                    result[@"total"] = [topic attributes][@"total"];
+                    result[@"start"] = [topic attributes][@"start"];
+                }
+            }
+            result[@"dataSource"] = dataSource;
+            completionHandler(result, nil);
+        } else {
+            completionHandler(nil, error);
+        }
+    }];
+}
+
 @end
