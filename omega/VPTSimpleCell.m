@@ -54,6 +54,10 @@
             break;
         case VPTSimpleCellTopic:
             _iconImageView.image = [UIImage imageNamed:@"icon_topic"];
+            break;
+        case VPTSimpleCellFavourite:
+            _iconImageView.image = [UIImage imageNamed:@"icon_favourite"];
+            break;
         default:
             break;
     }

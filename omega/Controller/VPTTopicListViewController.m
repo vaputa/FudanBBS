@@ -58,7 +58,7 @@
             });
         }];
     } else if (_topicListViewType == VPTTopicListViewTypeDataFromFavourite) {
-        _dataSource = [[NSMutableArray alloc] initWithArray:[VPTServiceManager getFavouriteTopicList]];
+        _dataSource = [VPTServiceManager getFavouriteTopicList];
     }
     [self.view addSubview:_tableView];
     
@@ -76,10 +76,13 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationItem setTitle:_boardName];
+    if (_topicListViewType ==VPTTopicListViewTypeDataFromFavourite) {
+        _dataSource = [VPTServiceManager getFavouriteTopicList];
+        [_tableView reloadData];
+    }
 }
 
 - (void)toggleFavourite {
-    
     if (_isFavourite) {
         [VPTServiceManager removeFromFavouriteBoardListWithBoardId:_boardId];
     } else {
@@ -188,8 +191,8 @@
             cell.type = VPTSimpleCellTopic;
         }
     } else if (_topicListViewType ==VPTTopicListViewTypeDataFromFavourite) {
-        NSString *boardId = cellInfo[@"boardId"];
-        [cell.detailTextLabel setText:[VPTServiceManager getAllBoardDictionary][boardId][@"desc"]];
+        cell.detail = [VPTServiceManager getAllBoardDictionary][cellInfo[@"boardId"]][@"desc"];
+        cell.type = VPTSimpleCellFavourite;
     }
     [cell setNeedsUpdateConstraints];
     return cell;

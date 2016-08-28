@@ -69,13 +69,13 @@
     _showQuote = YES;
     _isFavourite = [VPTServiceManager isFavouriteTopicWithBoardId:_boardId topicId:_gid];
     
-//    _btnQuote = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
-//    [_btnQuote setBackgroundImage:[UIImage imageNamed:@"icon_quote"] forState:UIControlStateNormal];
-//    [_btnQuote addTarget:self action:@selector(toggleQuote) forControlEvents:UIControlEventTouchUpInside];
+    _btnQuote = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
+    [_btnQuote setBackgroundImage:[UIImage imageNamed:@"icon_quote"] forState:UIControlStateNormal];
+    [_btnQuote addTarget:self action:@selector(toggleQuote) forControlEvents:UIControlEventTouchUpInside];
     
-//    _btnFavourite = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
-//    [_btnFavourite setBackgroundImage:[UIImage imageNamed:_isFavourite ? @"icon_favourite" : @"icon_unfavourite"] forState:UIControlStateNormal];
-//    [_btnFavourite addTarget:self action:@selector(toggleFavourite) forControlEvents:UIControlEventTouchUpInside];
+    _btnFavourite = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
+    [_btnFavourite setBackgroundImage:[UIImage imageNamed:_isFavourite ? @"icon_favourite" : @"icon_unfavourite"] forState:UIControlStateNormal];
+    [_btnFavourite addTarget:self action:@selector(toggleFavourite) forControlEvents:UIControlEventTouchUpInside];
     
     _btnReply = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
     [_btnReply setBackgroundImage:[UIImage imageNamed:@"icon_reply"] forState:UIControlStateNormal];

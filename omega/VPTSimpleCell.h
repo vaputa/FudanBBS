@@ -12,7 +12,8 @@ enum VPTSimpleCellType{
     VPTSimpleCellFolder,
     VPTSimpleCellBoard,
     VPTSimpleCellTopic,
-    VPTSimpleCellTop
+    VPTSimpleCellTop,
+    VPTSimpleCellFavourite
 };
 
 @interface VPTSimpleCell : UITableViewCell

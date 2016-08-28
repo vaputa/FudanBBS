@@ -100,6 +100,7 @@
     id cellInfo = _dataSource[indexPath.row];
     if (_boardListViewType == BoardListViewTypeAllFavouriteBoards) {
         cell.title = [VPTServiceManager getAllBoardDictionary][cellInfo[@"boardId"]][@"desc"];
+        cell.type = VPTSimpleCellFavourite;
     } else if (_boardListViewType == BoardListViewTypeAllSections) {
         cell.title = cellInfo[@"section"][@"desc"];
         cell.type = VPTSimpleCellFolder;
@@ -128,7 +129,7 @@
     id cellInfo = _dataSource[indexPath.row];
     [cell setSelected:NO];
     if (_boardListViewType ==BoardListViewTypeAllFavouriteBoards) {
-        NSDictionary *cellInfo = [VPTServiceManager getAllBoardDictionary][cellInfo[@"boardId"]];
+        cellInfo = [VPTServiceManager getAllBoardDictionary][cellInfo[@"boardId"]];
         VPTTopicListViewController *tlvc = [VPTTopicListViewController new];
         [tlvc setBoardId:cellInfo[@"title"]];
         [tlvc setBoardName:cellInfo[@"desc"]];

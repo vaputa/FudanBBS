@@ -12,6 +12,7 @@
 #import "VPTNetworkService.h"
 #import "VPTServiceManager.h"
 #import "VPTHttpClient.h"
+#import "NSString+URLEncoding.h"
 
 @interface VPTNetworkService ()
 @end
@@ -32,11 +33,36 @@ static VPTHttpClient *httpClient;
                                                                       completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
                                                                           NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
                                                                           NSString *result = [[NSString alloc] initWithData:responseObject encoding:enc];
-                                                                          completionHandler(result, error);
+                                                                          if (completionHandler) {
+                                                                              completionHandler(result, error);
+                                                                          }
                                                                           [httpClient saveCookies];
                                                                       }];
     [downloadTask resume];
+}
 
++ (void)requestWithUrlString:(NSString *)urlString method:(NSString *)method data:(NSDictionary *)data completionHandler:(void (^_Nullable)(NSString *response, NSError *error))completionHandler {
+    NSURL *URL = [NSURL URLWithString:urlString];
+    __block NSString *buf = @"";
+    [data enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        buf = [buf stringByAppendingString:[[NSString alloc] initWithFormat:@"%@%@=%@", ([buf isEqualToString:@""] ? @"" : @"&"),
+                                            [key stringByAddingPercentEncodingForFormData:YES],
+                                            [obj stringByAddingPercentEncodingForFormData:YES]]];
+    }];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+    [request setHTTPMethod:method];
+    [request setHTTPBody:[buf dataUsingEncoding:NSUTF8StringEncoding]];
+    NSURLSessionDataTask *downloadTask = [httpClient.sessionManager dataTaskWithRequest:request
+                                                                      completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+                                                                          NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+                                                                          NSString *result = [[NSString alloc] initWithData:responseObject encoding:enc];
+                                                                          if (completionHandler) {
+                                                                              completionHandler(result, error);
+                                                                          }
+                                                                          [httpClient saveCookies];
+                                                                      }];
+    [downloadTask resume];
 }
 
 + (void)request:(NSString *)urlString delegate:(id<DataReceiveDelegate>)delegate{

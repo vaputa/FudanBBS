@@ -1,5 +1,5 @@
 //
-//  VPTSettingsViewController.h
+//  VPTLoginViewController.m
 //  FudanBBS
 //
 //  Created by leon on 3/12/16.
@@ -10,6 +10,6 @@
 
 #import "VPTNetworkService.h"
 
-@interface VPTSettingsViewController : UIViewController <UITextFieldDelegate, DataReceiveDelegate>
+@interface VPTLoginViewController : UIViewController <UITextFieldDelegate>
 
 @end

@@ -43,7 +43,13 @@
 }
 
 - (void)reply {
-    [VPTServiceManager replyWithTitle:[NSString stringWithFormat:@"Re: %@", _reTitle] boardId:_boardID topic:_topicID text:_textView.text];
+    [VPTServiceManager replyWithTitle:[NSString stringWithFormat:@"Re: %@", _reTitle] boardId:_boardID topic:_topicID text:_textView.text completionHandler:^(id result, NSError *error) {
+        if (error) {
+            
+        } else {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }];
 }
 
 @end

@@ -10,10 +10,13 @@
 #import "VPTPersonalViewController.h"
 #import "VPTTopicListViewController.h"
 #import "VPTBoardListViewController.h"
+#import "VPTLoginViewController.h"
+#import "VPTServiceManager.h"
 
 @interface VPTPersonalViewController ()
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray *data;
+@property (nonatomic) BOOL isLogin;
 @end
 
 @implementation VPTPersonalViewController
@@ -33,9 +36,25 @@
     _tableView.dataSource = self;
     [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
     [self.view addSubview:_tableView];
-    
-    _data = @[@"我收藏的板块", @"我收藏的帖子"];
+    [self updateDataSource];
     [self updateViewConstraints];
+}
+
+- (void)updateDataSource {
+    if ([[VPTServiceManager getUserInformation] count]) {
+        _data = @[@"我收藏的板块", @"我收藏的帖子", @"登出"];
+        _isLogin = 1;
+    } else {
+        _data = @[@"我收藏的板块", @"我收藏的帖子", @"登录"];
+        _isLogin = 0;
+    }
+    [_tableView reloadData];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.tabBarController setTitle:@"个人中心"];
+    [self updateDataSource];
 }
 
 - (void)updateViewConstraints {
@@ -65,15 +84,26 @@
             [self.navigationController pushViewController:tlvc animated:YES];
             break;
         }
+        case 2: {
+            if (!_isLogin) {
+                VPTLoginViewController *lvc = [VPTLoginViewController new];
+                [self.navigationController pushViewController:lvc animated:YES];
+            } else {
+                [self logout];
+                [self updateDataSource];
+            }
+            break;
+        }
         default:
             break;
     }
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    [self.tabBarController setTitle:@"个人中心"];
+- (void)logout {
+    [VPTServiceManager clearUserInformation];
+    [VPTServiceManager logout];
 }
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"PersonalTableViewCell"];

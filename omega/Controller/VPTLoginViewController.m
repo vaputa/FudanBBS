@@ -1,5 +1,5 @@
 //
-//  VPTSettingsViewController.m
+//  VPTLoginViewController.m
 //  FudanBBS
 //
 //  Created by leon on 3/12/16.
@@ -9,87 +9,40 @@
 #import <Masonry/Masonry.h>
 #import "FlatUIKit.h"
 
-#import "VPTSettingsViewController.h"
+#import "VPTLoginViewController.h"
 #import "VPTServiceManager.h"
 
-@interface VPTSettingsViewController ()
-@property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) UIView *tableHeaderView;
+@interface VPTLoginViewController ()
 @property (nonatomic, strong) UIView *loginView;
 @property (nonatomic, strong) FUITextField *username;
 @property (nonatomic, strong) FUITextField *password;
 
-@property (nonatomic, strong) UIView *userInformationView;
-@property (nonatomic, strong) UILabel *usernameLabel;
-
 @property (nonatomic, strong) UILabel *hint;
 @end
 
-@implementation VPTSettingsViewController
+@implementation VPTLoginViewController
 
 
 - (instancetype)init {
     self = [super init];
     if (self) {
-        [self setTitle:@"设置"];
+        [self setTitle:@"登录"];
+        self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    _tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 300)];
     [self setUpLoginView];
-    [self setUpUserInformationView];
-    _tableView = [UITableView new];
-    [_tableView setTableHeaderView:_tableHeaderView];
-    [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
-    [_loginView setHidden:YES];
-    [_usernameLabel setHidden:NO];
-    [self.view addSubview:_tableView];
+    [self.view addSubview:_loginView];
     [self updateViewConstraints];
+    [_username becomeFirstResponder];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self.tabBarController setTitle:@"设置"];
-    [self updateTableHeaderView];
-}
-
-- (void)updateTableHeaderView {
-    if ([VPTServiceManager getUserInformation][@"username"]) {
-        [_usernameLabel setText:[VPTServiceManager getUserInformation][@"username"]];
-        [_userInformationView setHidden:NO];
-        [_loginView setHidden:YES];
-    } else {
-        [_userInformationView setHidden:YES];
-        [_loginView setHidden:NO];
-    }
-}
-
-- (void)setUpUserInformationView {
-    _usernameLabel = [UILabel new];
-    _userInformationView = [UIView new];
-    UIButton *logoutButton = [UIButton new];
-    [logoutButton setTitle:@"登出" forState:UIControlStateNormal];
-    [logoutButton setBackgroundColor:[UIColor lightGrayColor]];
-    [logoutButton addTarget:self action:@selector(logout) forControlEvents:UIControlEventTouchUpInside];
-
-    [_userInformationView addSubview:_usernameLabel];
-    [_userInformationView addSubview:logoutButton];
-    
-    [_usernameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(_userInformationView);
-        make.width.equalTo(@300);
-    }];
-    [logoutButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(_userInformationView);
-        make.width.equalTo(_userInformationView).multipliedBy(0.5);
-        make.top.equalTo(_usernameLabel.mas_bottom).offset(10);
-        make.height.equalTo(@20);
-        make.bottom.equalTo(_userInformationView);
-    }];
-    [_tableHeaderView addSubview:_userInformationView];
+    [self.tabBarController setTitle:@"登录"];
 }
 
 - (void)setUpLoginView {
@@ -114,16 +67,16 @@
     _username.textFieldColor = [UIColor whiteColor];
     _username.borderColor = [UIColor turquoiseColor];
     _username.borderWidth = 2.0f;
-    _username.cornerRadius = 3.0f;
+    _username.cornerRadius = 10.0f;
     
     _password.font = [UIFont flatFontOfSize:16];
     _password.backgroundColor = [UIColor clearColor];
+    _password.secureTextEntry = YES;
     _password.edgeInsets = UIEdgeInsetsMake(4.0f, 15.0f, 4.0f, 15.0f);
     _password.textFieldColor = [UIColor whiteColor];
     _password.borderColor = [UIColor turquoiseColor];
     _password.borderWidth = 2.0f;
-    _password.cornerRadius = 3.0f;
-    
+    _password.cornerRadius = 10.0f;
     
     button.buttonColor = [UIColor turquoiseColor];
     button.shadowColor = [UIColor greenSeaColor];
@@ -138,6 +91,7 @@
     
     _loginView = [UIView new];
     _loginView.layer.cornerRadius = 5;
+    _loginView.backgroundColor = [UIColor cloudsColor];
     
     [_loginView addSubview:_username];
     [_loginView addSubview:_password];
@@ -145,43 +99,32 @@
     
     [_username mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(_loginView).multipliedBy(0.8);
-        make.top.equalTo(_loginView);
+        make.height.equalTo(@40);
+        make.top.equalTo(_loginView).offset(5);
         make.centerX.equalTo(_loginView);
     }];
     [_password mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(_username);
-        make.top.equalTo(_username.mas_bottom);
+        make.height.equalTo(@40);
+        make.top.equalTo(_username.mas_bottom).offset(5);
         make.centerX.equalTo(_loginView);
     }];
     
     [button mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(_loginView);
         make.width.equalTo(_loginView).multipliedBy(0.25);
-        make.top.equalTo(_password.mas_bottom);
+        make.top.equalTo(_password.mas_bottom).offset(5);
         make.height.equalTo(@30);
-        make.bottom.lessThanOrEqualTo(_loginView);
+        make.bottom.lessThanOrEqualTo(_loginView).offset(-5);
     }];
-    
-    [_tableHeaderView addSubview:_loginView];
 }
 
 - (void)updateViewConstraints {
     [super updateViewConstraints];
-    [_tableView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.view);
-    }];
-    [_tableHeaderView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(_tableHeaderView.superview);
-        make.centerX.equalTo(_tableHeaderView.superview);
-        make.width.equalTo(_tableHeaderView.superview);
-        make.height.equalTo(@300);
-    }];
     [_loginView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(_tableHeaderView);
-        make.width.equalTo(_tableHeaderView);
-    }];
-    [_userInformationView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(_tableHeaderView);
+        make.centerX.equalTo(self.view);
+        make.top.equalTo(self.mas_topLayoutGuideBottom);
+        make.width.equalTo(self.view);
     }];
 }
 
@@ -189,7 +132,8 @@
     [VPTServiceManager loginWithUsername:_username.text
                                 password:_password.text
                                  success:^(NSDictionary *result) {
-                                     [self updateTableHeaderView];
+                                     [self.navigationController popViewControllerAnimated:YES];
+                                     [VPTServiceManager fetchAllBoards];
                                  } failure:^(NSDictionary *result) {
                                      UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"登录失败"
                                                                                          message:result[@"error"]

@@ -18,8 +18,8 @@
 
 @implementation VPTServiceManager
 
-static NSDictionary *boardDictionary;
-static NSArray *boardArray;
+static NSDictionary *cacheBoardDictionary;
+static NSArray *cacheBoardArray;
 
 #pragma mark favourite topics
 
@@ -79,7 +79,9 @@ static NSArray *boardArray;
 #pragma mark favourite boards
 
 + (NSArray *)getFavouriteBoardList {
-    return [[self defaultStorage] objectForKey:@"favouriteBoards"];
+    return [[[self defaultStorage] objectForKey:@"favouriteBoards"] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+        return [VPTServiceManager getAllBoardDictionary][evaluatedObject[@"boardId"]][@"desc"] != nil;
+    }]];
 }
 
 + (BOOL)isFavouriteBoardWithBoardId:(NSString *)boardId {
@@ -133,21 +135,22 @@ static NSArray *boardArray;
 #pragma mark all boards related
 
 + (NSArray *)getAllBoardList {
-    if (boardArray == nil) {
-        boardArray = [[self defaultStorage] objectForKey:@"boardArray"];
+    if (cacheBoardArray == nil) {
+        cacheBoardArray = [[self defaultStorage] objectForKey:@"boardArray"];
     }
-    return boardArray;
+    return cacheBoardArray;
 }
 
 + (NSDictionary *)getAllBoardDictionary {
-    if (boardDictionary == nil) {
-        boardDictionary = [[self defaultStorage] objectForKey:@"boardDictionary"];
+    if (cacheBoardDictionary == nil) {
+        cacheBoardDictionary = [[self defaultStorage] objectForKey:@"boardDictionary"];
     }
-    return boardDictionary;
+    return cacheBoardDictionary;
 }
 
 + (BOOL)setAllBoardDictionary:(NSDictionary *)boardDictionary {
     NSUserDefaults *storage = [self defaultStorage];
+    cacheBoardDictionary = boardDictionary;
     [storage setObject:boardDictionary forKey:@"boardDictionary"];
     [storage synchronize];
     return YES;
@@ -155,6 +158,7 @@ static NSArray *boardArray;
 
 + (BOOL)setAllBoardList:(NSArray *)boardList {
     NSUserDefaults *storage = [self defaultStorage];
+    cacheBoardArray = boardList;
     [storage setObject:boardList forKey:@"boardList"];
     [storage synchronize];
     return YES;
@@ -196,12 +200,18 @@ static NSArray *boardArray;
     return storage;
 }
 
-+ (BOOL)replyWithTitle:(NSString *)title boardId:(NSString *)boardId topic:(NSString *)topicId text:(NSString *)text {
-    NSString *url = [[NSString alloc] initWithFormat:@"http://bbs.fudan.edu.cn/bbs/snd?board=%@&f=%@&utf8=1", boardId, topicId];
++ (void)replyWithTitle:(NSString *)title
+               boardId:(NSString *)boardId
+                 topic:(NSString *)topicId
+                  text:(NSString *)text
+     completionHandler:(void (^)(id result, NSError *error))completionHandler {
+    NSString *url = [[NSString alloc] initWithFormat:@"https://bbs.fudan.edu.cn/bbs/snd?board=%@&f=%@&utf8=1", boardId, topicId];
     NSDictionary *data = @{@"title":title, @"sig":@"1", @"text":text};
-    [VPTNetworkService post:url data:data delegate:nil];
-    return YES;
+    [VPTNetworkService requestWithUrlString:url method:@"POST" data:data completionHandler:^(NSString *response, NSError *error) {
+        completionHandler(response, error);
+    }];
 }
+
 
 #pragma mark login/logout service
 + (void)loginWithUsername:(NSString *)username
@@ -232,10 +242,27 @@ static NSArray *boardArray;
                  }];
 }
 + (void)logout {
-    [VPTNetworkService request:@"http://bbs.fudan.edu.cn/bbs/logout" completion:nil];
+    [VPTNetworkService requestWithUrlString:@"http://bbs.fudan.edu.cn/bbs/logout" method:@"GET" data:nil completionHandler:nil];
 }
 
 #pragma mark fetch data
+
++ (void)fetchAllBoards {
+    [VPTNetworkService request:@"http://bbs.fudan.edu.cn/bbs/all" completion:^(NSString * data, NSError * _Nullable error) {
+        if (error != nil)
+            return ;
+        data = [data stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
+        ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[data dataUsingEncoding:NSUTF8StringEncoding] error:nil];
+        NSMutableArray *boardArray = [NSMutableArray new];
+        NSMutableDictionary *boardDictionary = [NSMutableDictionary new];
+        for (ONOXMLElement *board in [document.rootElement childrenWithTag:@"brd"]){
+            [boardArray addObject:[board attributes]];
+            [boardDictionary setObject:[board attributes] forKey:[board attributes][@"title"]];
+        }
+        [VPTServiceManager setAllBoardDictionary:boardDictionary];
+        [VPTServiceManager setAllBoardList:boardArray];
+    }];
+}
 
 + (void)fetchTopTenDataWithCompletionHandler:(void (^)(id result, NSError *error))completionHandler {
     [VPTNetworkService requestWithUrlString:@"https://bbs.fudan.edu.cn/bbs/top10" method:@"GET" completionHandler:^(NSString *response, NSError *error) {

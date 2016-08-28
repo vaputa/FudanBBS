@@ -39,6 +39,7 @@
 		358D12F01D72BF43005645AB /* VPTTopicDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = 358D12EF1D72BF43005645AB /* VPTTopicDetail.m */; };
 		358D12F31D72BF9A005645AB /* VPTPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 358D12F21D72BF9A005645AB /* VPTPost.m */; };
 		358D12F71D72CD2E005645AB /* VPTSimpleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 358D12F61D72CD2E005645AB /* VPTSimpleCell.m */; };
+		358D12FE1D72FF04005645AB /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 358D12FD1D72FF04005645AB /* NSString+URLEncoding.m */; };
 		35942B0A1C89F1BE00CD8BE6 /* VPTPostTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 35942B091C89F1BE00CD8BE6 /* VPTPostTableViewCell.m */; };
 		35AFB37D1C9EBE1C000A8B0C /* VPTUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 35AFB37C1C9EBE1C000A8B0C /* VPTUtil.m */; };
 		35D443AE1C847019001B4D02 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D443AD1C847019001B4D02 /* main.m */; };
@@ -48,7 +49,7 @@
 		35D443EB1C8474FA001B4D02 /* VPTNetworkService.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D443EA1C8474FA001B4D02 /* VPTNetworkService.m */; };
 		35D443EE1C847617001B4D02 /* VPTTopTenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D443ED1C847617001B4D02 /* VPTTopTenViewController.m */; };
 		35D5EF661CC36FA1000C0947 /* VPTReplyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D5EF651CC36FA1000C0947 /* VPTReplyViewController.m */; };
-		35DE57711C93AD700029511F /* VPTSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35DE57701C93AD700029511F /* VPTSettingsViewController.m */; };
+		35DE57711C93AD700029511F /* VPTLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35DE57701C93AD700029511F /* VPTLoginViewController.m */; };
 		35E67B411D71D7E3009E707C /* VPTTopic.m in Sources */ = {isa = PBXBuildFile; fileRef = 35E67B401D71D7E3009E707C /* VPTTopic.m */; };
 		35E67B441D71E852009E707C /* VPTTopTenTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 35E67B431D71E852009E707C /* VPTTopTenTableViewCell.m */; };
 		35F1EDA21C95307A00878E71 /* VPTServiceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 35F1EDA11C95307A00878E71 /* VPTServiceManager.m */; };
@@ -119,6 +120,8 @@
 		358D12F21D72BF9A005645AB /* VPTPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTPost.m; path = Model/VPTPost.m; sourceTree = "<group>"; };
 		358D12F51D72CD2E005645AB /* VPTSimpleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VPTSimpleCell.h; sourceTree = "<group>"; };
 		358D12F61D72CD2E005645AB /* VPTSimpleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VPTSimpleCell.m; sourceTree = "<group>"; };
+		358D12FC1D72FF04005645AB /* NSString+URLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+URLEncoding.h"; path = "Util/NSString+URLEncoding.h"; sourceTree = "<group>"; };
+		358D12FD1D72FF04005645AB /* NSString+URLEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding.m"; path = "Util/NSString+URLEncoding.m"; sourceTree = "<group>"; };
 		35942B081C89F1BE00CD8BE6 /* VPTPostTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTPostTableViewCell.h; path = Model/VPTPostTableViewCell.h; sourceTree = "<group>"; };
 		35942B091C89F1BE00CD8BE6 /* VPTPostTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTPostTableViewCell.m; path = Model/VPTPostTableViewCell.m; sourceTree = "<group>"; };
 		35AFB37B1C9EBE1C000A8B0C /* VPTUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTUtil.h; path = Infrustructure/VPTUtil.h; sourceTree = "<group>"; };
@@ -137,8 +140,8 @@
 		35D443ED1C847617001B4D02 /* VPTTopTenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTTopTenViewController.m; path = Controller/VPTTopTenViewController.m; sourceTree = "<group>"; };
 		35D5EF641CC36FA1000C0947 /* VPTReplyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTReplyViewController.h; path = Controller/VPTReplyViewController.h; sourceTree = "<group>"; };
 		35D5EF651CC36FA1000C0947 /* VPTReplyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTReplyViewController.m; path = Controller/VPTReplyViewController.m; sourceTree = "<group>"; };
-		35DE576F1C93AD700029511F /* VPTSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTSettingsViewController.h; path = Controller/VPTSettingsViewController.h; sourceTree = "<group>"; };
-		35DE57701C93AD700029511F /* VPTSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTSettingsViewController.m; path = Controller/VPTSettingsViewController.m; sourceTree = "<group>"; };
+		35DE576F1C93AD700029511F /* VPTLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTLoginViewController.h; path = Controller/VPTLoginViewController.h; sourceTree = "<group>"; };
+		35DE57701C93AD700029511F /* VPTLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTLoginViewController.m; path = Controller/VPTLoginViewController.m; sourceTree = "<group>"; };
 		35E67B3F1D71D7E3009E707C /* VPTTopic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTTopic.h; path = Model/VPTTopic.h; sourceTree = "<group>"; };
 		35E67B401D71D7E3009E707C /* VPTTopic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTTopic.m; path = Model/VPTTopic.m; sourceTree = "<group>"; };
 		35E67B421D71E852009E707C /* VPTTopTenTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTTopTenTableViewCell.h; path = Model/VPTTopTenTableViewCell.h; sourceTree = "<group>"; };
@@ -288,8 +291,8 @@
 				351719ED1C8C123400DA1E07 /* VPTBoardListViewController.m */,
 				351719EF1C8C285C00DA1E07 /* VPTTopicListViewController.h */,
 				351719F01C8C285C00DA1E07 /* VPTTopicListViewController.m */,
-				35DE576F1C93AD700029511F /* VPTSettingsViewController.h */,
-				35DE57701C93AD700029511F /* VPTSettingsViewController.m */,
+				35DE576F1C93AD700029511F /* VPTLoginViewController.h */,
+				35DE57701C93AD700029511F /* VPTLoginViewController.m */,
 				35F1EDA31C95362800878E71 /* VPTPersonalViewController.h */,
 				35F1EDA41C95362800878E71 /* VPTPersonalViewController.m */,
 			);
@@ -311,6 +314,8 @@
 				358D12EF1D72BF43005645AB /* VPTTopicDetail.m */,
 				358D12F11D72BF9A005645AB /* VPTPost.h */,
 				358D12F21D72BF9A005645AB /* VPTPost.m */,
+				358D12FC1D72FF04005645AB /* NSString+URLEncoding.h */,
+				358D12FD1D72FF04005645AB /* NSString+URLEncoding.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -476,6 +481,7 @@
 				35E67B441D71E852009E707C /* VPTTopTenTableViewCell.m in Sources */,
 				350457121D71F86300977E5D /* UITabBar+FlatUI.m in Sources */,
 				358D12F01D72BF43005645AB /* VPTTopicDetail.m in Sources */,
+				358D12FE1D72FF04005645AB /* NSString+URLEncoding.m in Sources */,
 				3553AE701C9D4A0B0001703B /* VPTHttpClient.m in Sources */,
 				35D443B11C847019001B4D02 /* AppDelegate.m in Sources */,
 				35D443E71C84719F001B4D02 /* VPTWelcomeViewController.m in Sources */,
@@ -488,7 +494,7 @@
 				351719F11C8C285C00DA1E07 /* VPTTopicListViewController.m in Sources */,
 				350457131D71F86300977E5D /* UITableViewCell+FlatUI.m in Sources */,
 				35F1EDA21C95307A00878E71 /* VPTServiceManager.m in Sources */,
-				35DE57711C93AD700029511F /* VPTSettingsViewController.m in Sources */,
+				35DE57711C93AD700029511F /* VPTLoginViewController.m in Sources */,
 				35D5EF661CC36FA1000C0947 /* VPTReplyViewController.m in Sources */,
 				350457111D71F86300977E5D /* UIStepper+FlatUI.m in Sources */,
 				35942B0A1C89F1BE00CD8BE6 /* VPTPostTableViewCell.m in Sources */,
