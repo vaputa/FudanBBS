@@ -7,6 +7,7 @@
 //
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <ReactiveCocoa/ReactiveCocoa.h>
+#import "FlatUIKit.h"
 
 #import "VPTPostTableViewCell.h"
 #import "Masonry/Masonry.h"
@@ -25,31 +26,33 @@
         _reply = [[UILabel alloc] init];
         _content = [[UIView alloc] init];
         
-        [_user setFont:[UIFont systemFontOfSize:12]];
+        _user.font = [UIFont boldFlatFontOfSize:14];
         
-        [_date setText:@"2015/01/01 00:00"];
+        [_date setText:@""];
+        _date.textAlignment = NSTextAlignmentRight;
         [_date setFont:[UIFont systemFontOfSize:12]];
         
         [_reply setPreferredMaxLayoutWidth:[[UIScreen mainScreen] bounds].size.width - 20];
         [_reply setNumberOfLines:0];
-        [_reply setFont:[UIFont systemFontOfSize:10]];
-        [_reply setBackgroundColor:[UIColor colorWithRed:1.0 green:1.0 blue:0 alpha:0.3]];
+        [_reply setFont:[UIFont systemFontOfSize:12]];
         
         [self.contentView addSubview:_user];
         [self.contentView addSubview:_date];
-        [self.contentView addSubview:_reply];
         [self.contentView addSubview:_content];
-
+        [self.contentView addSubview:_reply];
+        
         [_user mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.contentView).offset(5);
             make.left.equalTo(_content);
+            make.width.equalTo(_content).multipliedBy(0.7);
         }];
         [_date mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(_user.mas_bottom);
-            make.left.equalTo(_content);
+            make.bottom.equalTo(_user);
+            make.left.equalTo(_user.mas_right);
+            make.right.equalTo(_content);
         }];
         [_content mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.width.equalTo(self.contentView).offset(-20);
+            make.width.equalTo(self.contentView).offset(-5);
             make.top.equalTo(_date.mas_bottom).offset(10);
             make.bottom.equalTo(_reply.mas_top).offset(-10);
             make.centerX.equalTo(self.contentView);
@@ -68,7 +71,7 @@
 }
 
 
-- (void)buildContent:(NSMutableArray *)content withReload:(BOOL)reload {
+- (void)buildContent:(NSArray *)content withReload:(BOOL)reload {
     if ([_content subviews]) {
          for (UIView *view in [_content subviews]) {
              [view removeFromSuperview];
@@ -81,9 +84,11 @@
             UILabel *label = [UILabel new];
             [label setText:[para objectForKey:@"text"]];
             [label setNumberOfLines:0];
-            [label setFont:[UIFont systemFontOfSize:14]];
+            [label setTextColor:[UIColor midnightBlueColor]];
+            [label setFont:[UIFont systemFontOfSize:16]];
             [_content addSubview:label];
             [label setPreferredMaxLayoutWidth:[[UIScreen mainScreen] bounds].size.width - 20];
+            [label sizeToFit];
             [label mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.width.equalTo(_content);
                 make.centerX.equalTo(_content);

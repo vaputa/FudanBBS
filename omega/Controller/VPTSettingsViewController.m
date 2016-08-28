@@ -7,7 +7,7 @@
 //
 
 #import <Masonry/Masonry.h>
-#import <FlatUIKit/FlatUIKit.h>
+#import "FlatUIKit.h"
 
 #import "VPTSettingsViewController.h"
 #import "VPTServiceManager.h"

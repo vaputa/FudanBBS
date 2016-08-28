@@ -9,26 +9,30 @@
 #import <Masonry/Masonry.h>
 #import <Ono/Ono.h>
 
+#import <NSDate_TimeAgo/NSDate+TimeAgo.h>
+#import "FlatUIKit.h"
+
 #import "VPTTopicViewController.h"
 #import "VPTReplyViewController.h"
 #import "VPTPostTableViewCell.h"
 #import "VPTServiceManager.h"
 #import "VPTUtil.h"
+#import "VPTPost.h"
 
 @interface VPTTopicViewController ()
 @property (nonatomic) BOOL showQuote;
 @property (nonatomic) BOOL isFavourite;
 @property (nonatomic, strong) UILabel *label;
 @property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) NSMutableArray *newsArray;
 @property (nonatomic, strong) UIView *footerView;
-@property (nonatomic, strong) UIButton *prevPage;
-@property (nonatomic, strong) UIButton *nextPage;
+@property (nonatomic, strong) FUIButton *prevPage;
+@property (nonatomic, strong) FUIButton *nextPage;
 @property (nonatomic, strong) UIButton *btnFavourite;
 @property (nonatomic, strong) UIButton *btnQuote;
 @property (nonatomic, strong) UIButton *btnReply;
 @property (nonatomic, strong) NSMutableDictionary *imageDirectory;
 @property (nonatomic, strong) NSMutableSet *finishSet;
+@property (nonatomic, strong) NSArray *dataSource;
 @end
 
 @implementation VPTTopicViewController
@@ -36,7 +40,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [VPTNetworkService request:[self url] delegate:self];
+    [VPTServiceManager fetchPostWithBoardId:_boardId gid:_gid fid:nil type:0 completionHandler:^(id result, NSError *error) {
+        _dataSource = result;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self reloadTableView];
+        });
+    }];
+
     _imageDirectory = [NSMutableDictionary new];
     _finishSet = [NSMutableSet new];
 
@@ -59,13 +69,13 @@
     _showQuote = YES;
     _isFavourite = [VPTServiceManager isFavouriteTopicWithBoardId:_boardId topicId:_gid];
     
-    _btnQuote = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
-    [_btnQuote setBackgroundImage:[UIImage imageNamed:@"icon_quote"] forState:UIControlStateNormal];
-    [_btnQuote addTarget:self action:@selector(toggleQuote) forControlEvents:UIControlEventTouchUpInside];
+//    _btnQuote = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
+//    [_btnQuote setBackgroundImage:[UIImage imageNamed:@"icon_quote"] forState:UIControlStateNormal];
+//    [_btnQuote addTarget:self action:@selector(toggleQuote) forControlEvents:UIControlEventTouchUpInside];
     
-    _btnFavourite = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
-    [_btnFavourite setBackgroundImage:[UIImage imageNamed:_isFavourite ? @"icon_favourite" : @"icon_unfavourite"] forState:UIControlStateNormal];
-    [_btnFavourite addTarget:self action:@selector(toggleFavourite) forControlEvents:UIControlEventTouchUpInside];
+//    _btnFavourite = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
+//    [_btnFavourite setBackgroundImage:[UIImage imageNamed:_isFavourite ? @"icon_favourite" : @"icon_unfavourite"] forState:UIControlStateNormal];
+//    [_btnFavourite addTarget:self action:@selector(toggleFavourite) forControlEvents:UIControlEventTouchUpInside];
     
     _btnReply = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
     [_btnReply setBackgroundImage:[UIImage imageNamed:@"icon_reply"] forState:UIControlStateNormal];
@@ -108,10 +118,11 @@
 
 - (UIView *)tableHeaderView {
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 30)];
-    [label setText:_postTitle];
     [label setNumberOfLines:0];
-    [label sizeToFit];
+    [label setAttributedText:[[NSAttributedString alloc] initWithString:_postTitle attributes:@{NSForegroundColorAttributeName:[UIColor wetAsphaltColor],
+                                                                                                NSFontAttributeName:[UIFont boldFlatFontOfSize:18]}]];
     [label setTextAlignment:NSTextAlignmentCenter];
+    [label sizeToFit];
     return label;
 }
 
@@ -119,23 +130,29 @@
     if (_footerView) {
         return _footerView;
     }
-    _footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 30)];
+    _footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 50)];
 
-    NSDictionary *normal = [NSDictionary dictionaryWithObjects:[[NSArray alloc] initWithObjects:[UIFont systemFontOfSize:14], [UIColor blackColor], nil]
-                                                                forKeys:[[NSArray alloc] initWithObjects:NSFontAttributeName, NSForegroundColorAttributeName, nil]];
+    _prevPage = [[FUIButton alloc] init];
+    _nextPage = [[FUIButton alloc] init];
+    
+    _prevPage.buttonColor = [UIColor turquoiseColor];
+    _prevPage.shadowColor = [UIColor greenSeaColor];
+    _prevPage.shadowHeight = 3.0f;
+    _prevPage.cornerRadius = 6.0f;
+    _prevPage.titleLabel.font = [UIFont boldFlatFontOfSize:16];
+    [_prevPage setTitleColor:[UIColor cloudsColor] forState:UIControlStateNormal];
+    [_prevPage setTitleColor:[UIColor cloudsColor] forState:UIControlStateHighlighted];
+    
+    [_prevPage setTitle:@"上一页" forState:UIControlStateNormal];
+    [_nextPage setTitle:@"下一页" forState:UIControlStateNormal];
 
-    _prevPage = [[UIButton alloc] init];
-    _nextPage = [[UIButton alloc] init];
-    
-    [_prevPage setImage:[UIImage imageNamed:@"icon_last"] forState:UIControlStateNormal];
-    [_nextPage setImage:[UIImage imageNamed:@"icon_next"] forState:UIControlStateNormal];
-    
-    [_prevPage setAttributedTitle:[[NSAttributedString alloc] initWithString:@"上一页" attributes:normal] forState:UIControlStateNormal];
-    [_nextPage setAttributedTitle:[[NSAttributedString alloc] initWithString:@"下一页" attributes:normal] forState:UIControlStateNormal];
-    
-    _nextPage.transform = CGAffineTransformMakeScale(-1.0, 1.0);
-    _nextPage.titleLabel.transform = CGAffineTransformMakeScale(-1.0, 1.0);
-    _nextPage.imageView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+    _nextPage.buttonColor = [UIColor turquoiseColor];
+    _nextPage.shadowColor = [UIColor greenSeaColor];
+    _nextPage.shadowHeight = 3.0f;
+    _nextPage.cornerRadius = 6.0f;
+    _nextPage.titleLabel.font = [UIFont boldFlatFontOfSize:16];
+    [_nextPage setTitleColor:[UIColor cloudsColor] forState:UIControlStateNormal];
+    [_nextPage setTitleColor:[UIColor cloudsColor] forState:UIControlStateHighlighted];
 
     [_prevPage addTarget:self action:@selector(goToPrevPage) forControlEvents:UIControlEventTouchUpInside];
     [_nextPage addTarget:self action:@selector(goToNextPage) forControlEvents:UIControlEventTouchUpInside];
@@ -144,57 +161,77 @@
     [_footerView addSubview:_nextPage];
     
     [_prevPage mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo(_footerView).dividedBy(2.0);
-        make.height.equalTo(_footerView);
-        make.left.equalTo(_footerView);
-        make.top.equalTo(_footerView);
+        make.width.equalTo(_footerView).dividedBy(3.0);
+        make.height.equalTo(_footerView).offset(-10);
+        make.right.equalTo(_footerView.mas_centerX);
+        make.centerY.equalTo(_footerView);
     }];
     [_nextPage mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo(_footerView).dividedBy(2.0);
-        make.height.equalTo(_footerView);
-        make.right.equalTo(_footerView);
-        make.top.equalTo(_footerView);
+        make.width.equalTo(_footerView).dividedBy(3.0);
+        make.height.equalTo(_footerView).offset(-10);
+        make.left.equalTo(_footerView.mas_centerX);
+        make.centerY.equalTo(_footerView);
     }];
     return _footerView;
 }
 
 - (void)goToNextPage {
-    [VPTNetworkService request:[self urlForNextPageWithBoard:_boardId gid:_gid fid:[_newsArray lastObject][@"attributes"][@"fid"]] delegate:self];
+    [VPTServiceManager fetchPostWithBoardId:_boardId gid:_gid fid:[(VPTPost *)[_dataSource lastObject] attributes][@"fid"] type:2 completionHandler:^(id result, NSError *error) {
+        _dataSource = result;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self reloadTableView];
+        });
+    }];
 }
 - (void)goToPrevPage {
-    [VPTNetworkService request:[self urlForPreviousPageWithBoard:_boardId gid:_gid fid:[_newsArray firstObject][@"attributes"][@"fid"]] delegate:self];
+    [VPTServiceManager fetchPostWithBoardId:_boardId gid:_gid fid:[(VPTPost *)[_dataSource firstObject] attributes][@"fid"] type:1 completionHandler:^(id result, NSError *error) {
+        _dataSource = result;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self reloadTableView];
+        });
+    }];
 }
 
-- (NSString *)url {
-    return [NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/tcon?new=1&board=%@&f=%@", _boardId, _gid];
-}
-
-- (NSString *)urlForPreviousPageWithBoard:(NSString *)board gid:(NSString *)gid fid:(NSString *)fid{
-    return [NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/tcon?new=1&board=%@&g=%@&f=%@&a=p", board, gid, fid];
-}
-
-- (NSString *)urlForNextPageWithBoard:(NSString *)board gid:(NSString *)gid fid:(NSString *)fid{
-    return [NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/tcon?new=1&board=%@&g=%@&f=%@&a=n", board, gid, fid];
+- (void)reloadTableView {
+    [_prevPage setHidden:[[(VPTPost *)[_dataSource firstObject] attributes][@"fid"] isEqualToString:_gid]];
+    [_nextPage setHidden:[_dataSource count] != 20];
+    [_footerView setHidden:[_nextPage isHidden] && [_prevPage isHidden]];
+    if ([_footerView isHidden]) {
+        [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
+    } else {
+        [_tableView setTableFooterView:_footerView];
+    }
+    [_tableView setContentOffset:CGPointMake(0, -_tableView.contentInset.top) animated:NO];
+    [_tableView reloadData];
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
     VPTPostTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VPTPostTableViewCell" forIndexPath:indexPath];
+    VPTPost *post = _dataSource[indexPath.row];
     [cell setTableView:_tableView];
     [cell setIndexPath:indexPath];
     [cell setFinishSet:_finishSet];
     [cell setImageDictionary:_imageDirectory];
     
-    NSDate *date = [[_newsArray objectAtIndex:indexPath.row] objectForKey:@"date"];
-    [cell.date setText:[VPTUtil dateToString:date]];
-
-    [cell.user setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"nick"]];
-    [cell buildContent:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"content"] withReload:YES];
+    [cell configureFlatCellWithColor:[UIColor cloudsColor]
+                       selectedColor:nil
+                     roundingCorners:UIRectCornerTopLeft | UIRectCornerTopRight];
+    cell.cornerRadius = 10;
+    
+    cell.date.text = [post.date timeAgo];
+    
+    NSString *text = [NSString stringWithFormat:@"%@ (%@)", post.owner, post.nick];
+    NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"发信人: %@", text]];
+    [attributeString addAttributes:@{NSForegroundColorAttributeName: [UIColor peterRiverColor]} range:NSMakeRange(5, [text length])];
+    [cell.user setAttributedText:attributeString];
+    
+    [cell buildContent:post.content withReload:YES];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     if (_showQuote) {
-        [cell.reply setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"reply"]];
+        cell.reply.text = post.reply;
     } else {
-        [cell.reply setText:nil];
+        cell.reply.text = nil;
     }
     if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
         [cell setSeparatorInset:UIEdgeInsetsZero];
@@ -207,21 +244,27 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     VPTPostTableViewCell *cell = [[VPTPostTableViewCell alloc] init];
+    VPTPost *post = _dataSource[indexPath.row];
     [cell setTableView:_tableView];
     [cell setIndexPath:indexPath];
     [cell setFinishSet:_finishSet];
     [cell setImageDictionary:_imageDirectory];
 
-    NSDate *date = [[_newsArray objectAtIndex:indexPath.row] objectForKey:@"date"];
-    [cell.date setText:[VPTUtil dateToString:date]];
+    cell.date.text = [post.date timeAgo];
     
-    [cell.user setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"nick"]];
-    [cell buildContent:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"content"] withReload:NO];
+    NSString *text = [NSString stringWithFormat:@"%@ (%@)", post.owner, post.nick];
+    NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"发信人: %@", text]];
+    [attributeString addAttributes:@{NSForegroundColorAttributeName: [UIColor peterRiverColor]} range:NSMakeRange(5, [text length])];
+    [cell.user setAttributedText:attributeString];
+    
+    [cell buildContent:post.content withReload:NO];
+    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     if (_showQuote) {
-        [cell.reply setText:[[_newsArray objectAtIndex:indexPath.row] objectForKey:@"reply"]];
+        cell.reply.text = post.reply;
     } else {
-        [cell.reply setText:nil];
+        cell.reply.text = nil;
     }
+
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
     [cell setNeedsLayout];
@@ -230,7 +273,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [_newsArray count];
+    return [_dataSource count];
 }
 
 - (void)updateViewConstraints {
@@ -241,63 +284,6 @@
         make.centerX.equalTo(self.view);
         make.height.equalTo(self.view);
     }];
-}
-
-- (void)receiveData:(NSString *)data {
-    data = [data stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
-    ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[data dataUsingEncoding:NSUTF8StringEncoding] error:nil];
-    _newsArray = [[NSMutableArray alloc] init];
-    for (ONOXMLElement *child in [[document rootElement] children]){
-        if ([[child tag] isEqualToString:@"po"]) {
-            NSMutableDictionary *post = [NSMutableDictionary new];
-            post[@"nick"] = [[[child childrenWithTag:@"nick"] firstObject] stringValue];
-            post[@"date"] = [VPTUtil dateFromString:[[[child childrenWithTag:@"date"] firstObject] stringValue]];
-            post[@"title"] = [[[child childrenWithTag:@"title"] firstObject] stringValue];
-            post[@"board"] = [[[child childrenWithTag:@"board"] firstObject] stringValue];
-            NSMutableArray *content = [NSMutableArray new];
-            NSString *reply = @"";
-            for (ONOXMLElement *pa in [child childrenWithTag:@"pa"]) {
-                if ([[[pa attributes] objectForKey:@"m"] isEqualToString:@"t"]) {
-                    for (ONOXMLElement *p in [pa childrenWithTag:@"p"]) {
-                        if (![[[p stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
-                            [content addObject:@{
-                                                 @"type": @"text",
-                                                 @"text": [p stringValue]
-                                                 }];
-                        }
-                        for (ONOXMLElement *a in [p childrenWithTag:@"a"]) {
-                            if ([[a attributes][@"href"] hasPrefix:@"http://bbs.fudan.edu.cn/upload/"]) {
-                                [content addObject:@{
-                                                     @"type": @"image",
-                                                     @"href": [a attributes][@"href"]
-                                                     }];
-                            }
-                        }
-                    }
-                } else if ([[[pa attributes] objectForKey:@"m"] isEqualToString:@"q"]) {
-                    for (ONOXMLElement *p in [pa children]){
-                        if ([[p tag] isEqualToString:@"p"]) {
-                            reply = [reply stringByAppendingFormat:@"%@\n", [p stringValue]];
-                        }
-                    }
-                }
-            }
-            [post setObject:content forKey:@"content"];
-            [post setObject:reply forKey:@"reply"];
-            [post setObject:[child attributes] forKey:@"attributes"];
-            [_newsArray addObject:post];
-        }
-    }
-    [_prevPage setHidden:[[_newsArray firstObject][@"attributes"][@"fid"] isEqualToString:_gid]];
-    [_nextPage setHidden:[_newsArray count] != 20];
-    [_footerView setHidden:[_nextPage isHidden] && [_prevPage isHidden]];
-    if ([_footerView isHidden]) {
-        [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
-    } else {
-        [_tableView setTableFooterView:_footerView];
-    }
-    [_tableView reloadData];
-    [_tableView setContentOffset:CGPointMake(0, -_tableView.contentInset.top) animated:NO];
 }
 
 @end

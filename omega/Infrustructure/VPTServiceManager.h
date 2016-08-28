@@ -41,5 +41,6 @@
 + (void)logout;
 
 + (void)fetchTopTenDataWithCompletionHandler:(void (^)(id result, NSError *error))completionHandler;
++ (void)fetchPostWithBoardId:(NSString *)boardId gid:(NSString *)gid fid:(NSString *)fid type:(NSInteger)type completionHandler:(void (^)(id result, NSError *error))completionHandler;
 
 @end

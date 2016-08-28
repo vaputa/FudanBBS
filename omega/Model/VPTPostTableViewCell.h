@@ -17,6 +17,6 @@
 @property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, strong) NSMutableSet *finishSet;
 @property (nonatomic, strong) NSMutableDictionary *imageDictionary;
-- (void)buildContent:(NSMutableArray *)content withReload:(BOOL)reload;
+- (void)buildContent:(NSArray *)content withReload:(BOOL)reload;
 
 @end

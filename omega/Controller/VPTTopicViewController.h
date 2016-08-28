@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "VPTNetworkService.h"
 
-@interface VPTTopicViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, DataReceiveDelegate>
+@interface VPTTopicViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) NSString *gid;
 @property (nonatomic, strong) NSString *boardId;
 @property (nonatomic, strong) NSString *boardName;

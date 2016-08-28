@@ -9,11 +9,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>FlatUIKit.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>JSQMessagesViewController.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -25,6 +20,11 @@
 			<false/>
 		</dict>
 		<key>Masonry.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>NSDate+TimeAgo.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -57,17 +57,27 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>0CA44F43321D8D412B18C369FB4F4E16</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>1C3436CEA5C3D39764C5F54374794ECB</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>3D766FD15214B79B2A9433AA51EFB888</key>
+		<key>3AD1740A67C7C335F4172EC7FCBE97CB</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>63597CD30E71722D54C09814BC3A460D</key>
+		<key>524F3AA8BB891D04E2737D464FF8E5B5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>89332474C21CB7780DEDA0EA2356F7F2</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -82,17 +92,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>AD0892BE565CA9D5A839B9137561277C</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>B9FA0AE3CE82E3B81CB8998A96725D80</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>D88DFDD6E93AB881004AD5DE293F98CB</key>
+		<key>AB99B73E4C9117D660429F5DCC02A787</key>
 		<dict>
 			<key>primary</key>
 			<true/>

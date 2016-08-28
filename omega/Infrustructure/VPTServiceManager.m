@@ -8,6 +8,8 @@
 
 #import "VPTServiceManager.h"
 #import "VPTTopic.h"
+#import "VPTPost.h"
+#import "VPTUtil.h"
 
 #import <Ono/Ono.h>
 
@@ -259,4 +261,72 @@ static NSArray *boardArray;
     }];
 }
 
++ (void)fetchPostWithBoardId:(NSString *)boardId gid:(NSString *)gid fid:(NSString *)fid type:(NSInteger)type completionHandler:(void (^)(id result, NSError *error))completionHandler {
+    NSString *url = nil;
+    switch (type) {
+        case 0:
+            url = [NSString stringWithFormat:@"https://bbs.fudan.edu.cn/bbs/tcon?new=1&board=%@&f=%@", boardId, gid];
+            break;
+        case 1:
+            url = [NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/tcon?new=1&board=%@&g=%@&f=%@&a=p", boardId, gid, fid];
+            break;
+        case 2:
+            url = [NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/tcon?new=1&board=%@&g=%@&f=%@&a=n", boardId, gid, fid];
+            break;
+        default:
+            break;
+    }
+    [VPTNetworkService requestWithUrlString:url method:@"GET" completionHandler:^(NSString *response, NSError *error) {
+        if (!error) {
+            response = [response stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
+            ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[response dataUsingEncoding:NSUTF8StringEncoding] error:nil];
+            NSMutableArray *posts = [[NSMutableArray alloc] init];
+            for (ONOXMLElement *child in [[document rootElement] children]){
+                if ([[child tag] isEqualToString:@"po"]) {
+                    VPTPost *post = [VPTPost new];
+                    post.nick = [[[child childrenWithTag:@"nick"] firstObject] stringValue];
+                    post.owner = [[[child childrenWithTag:@"owner"] firstObject] stringValue];
+                    post.date = [VPTUtil dateFromString:[[[child childrenWithTag:@"date"] firstObject] stringValue]];
+                    post.title = [[[child childrenWithTag:@"title"] firstObject] stringValue];
+                    post.board = [[[child childrenWithTag:@"board"] firstObject] stringValue];
+                    NSMutableArray *content = [NSMutableArray new];
+                    NSString *reply = @"";
+                    for (ONOXMLElement *pa in [child childrenWithTag:@"pa"]) {
+                        if ([[[pa attributes] objectForKey:@"m"] isEqualToString:@"t"]) {
+                            for (ONOXMLElement *p in [pa childrenWithTag:@"p"]) {
+                                if (![[[p stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
+                                    [content addObject:@{
+                                                         @"type": @"text",
+                                                         @"text": [p stringValue]
+                                                         }];
+                                }
+                                for (ONOXMLElement *a in [p childrenWithTag:@"a"]) {
+                                    if ([[a attributes][@"href"] hasPrefix:@"http://bbs.fudan.edu.cn/upload/"]) {
+                                        [content addObject:@{
+                                                             @"type": @"image",
+                                                             @"href": [a attributes][@"href"]
+                                                             }];
+                                    }
+                                }
+                            }
+                        } else if ([[[pa attributes] objectForKey:@"m"] isEqualToString:@"q"]) {
+                            for (ONOXMLElement *p in [pa children]){
+                                if ([[p tag] isEqualToString:@"p"]) {
+                                    reply = [reply stringByAppendingFormat:@"%@\n", [p stringValue]];
+                                }
+                            }
+                        }
+                    }
+                    post.content = content;
+                    post.reply = reply;
+                    post.attributes = [child attributes];
+                    [posts addObject:post];
+                }
+            }
+            completionHandler(posts, nil);
+        } else {
+            completionHandler(nil, error);
+        }
+    }];
+}
 @end

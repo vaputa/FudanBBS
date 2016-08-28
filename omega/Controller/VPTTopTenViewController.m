@@ -9,7 +9,7 @@
 #import <Masonry/Masonry.h>
 #import <Ono/Ono.h>
 #import <ReactiveCocoa/ReactiveCocoa.h>
-#import <FlatUIKit/FlatUIKit.h>
+#import "FlatUIKit.h"
 
 #import "VPTTopTenViewController.h"
 #import "VPTTopicViewController.h"

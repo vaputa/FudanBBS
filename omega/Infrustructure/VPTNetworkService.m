@@ -24,7 +24,7 @@ static VPTHttpClient *httpClient;
     httpClient = [VPTHttpClient getInstance];
 }
 
-+ (void)requestWithUrlString:(NSString *)urlString method:(NSString *)method completionHandler:(void (^_Nullable)(NSString *, NSError *_Nullable))completionHandler {
++ (void)requestWithUrlString:(NSString *)urlString method:(NSString *)method completionHandler:(void (^_Nullable)(NSString *response, NSError *error))completionHandler {
     NSURL *URL = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
     [request setHTTPMethod:method];

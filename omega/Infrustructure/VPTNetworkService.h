@@ -14,7 +14,7 @@
 
 @interface VPTNetworkService : NSObject
 
-+ (void)requestWithUrlString:(NSString *)urlString method:(NSString *)method completionHandler:(void (^)(NSString *, NSError *))completionHandler;
++ (void)requestWithUrlString:(NSString *)urlString method:(NSString *)method completionHandler:(void (^)(NSString *response, NSError *error))completionHandler;
 
 + (void)request:(NSString *)url delegate:(id<DataReceiveDelegate>)delegate;
 + (void)post:(NSString *)urlString data:(NSDictionary *)dictionary delegate:(id<DataReceiveDelegate>)delegate;
