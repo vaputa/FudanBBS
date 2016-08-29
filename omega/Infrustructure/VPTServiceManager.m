@@ -218,28 +218,28 @@ static NSArray *cacheBoardArray;
                  password:(NSString *)password
                   success:(void (^_Nullable)(NSDictionary *))success
                   failure:(void (^_Nullable)(NSDictionary *))failure {
-    [VPTNetworkService post:@"https://bbs.fudan.edu.cn/bbs/login"
-                       data:@{
-                              @"id": username,
-                              @"pw": password,
-                              @"persistent": @"on"
+    [VPTNetworkService requestWithUrlString:@"" method:@"POST"
+                                       data:@{
+                                              @"id": username,
+                                              @"pw": password,
+                                              @"persistent": @"on"
+                                              }
+                          completionHandler:^(NSString *response, NSError *error) {
+                              if (!error) {
+                                  if ([response hasPrefix:@"<html>"] || response == nil) {
+                                      failure(@{@"code":@"403", @"error": @"用户名和密码不匹配"});
+                                  } else {
+                                      response = [response stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
+                                      ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[response dataUsingEncoding:NSUTF8StringEncoding] error:nil];
+                                      NSString *nickname = [[[[[[document rootElement] childrenWithTag:@"session"] firstObject] childrenWithTag:@"u"] firstObject] stringValue];
+                                      NSDictionary *userInformation = @{@"username": nickname };
+                                      [VPTServiceManager setUserInformation:userInformation];
+                                      success(userInformation);
+                                  }
+                              } else {
+                                  failure(@{@"code":@"404", @"error": @"网络无法连接"});
                               }
-                 completion:^(NSString * data, NSError * error) {
-                     if (!error) {
-                         if ([data hasPrefix:@"<html>"] || data == nil) {
-                             failure(@{@"code":@"403", @"error": @"用户名和密码不匹配"});
-                         } else {
-                             data = [data stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
-                             ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[data dataUsingEncoding:NSUTF8StringEncoding] error:nil];
-                             NSString *nickname = [[[[[[document rootElement] childrenWithTag:@"session"] firstObject] childrenWithTag:@"u"] firstObject] stringValue];
-                             NSDictionary *userInformation = @{@"username": nickname };
-                             [VPTServiceManager setUserInformation:userInformation];
-                             success(userInformation);
-                         }
-                     } else {
-                         failure(@{@"code":@"404", @"error": @"网络无法连接"});
-                     }
-                 }];
+                          }];
 }
 + (void)logout {
     [VPTNetworkService requestWithUrlString:@"http://bbs.fudan.edu.cn/bbs/logout" method:@"GET" data:nil completionHandler:nil];
@@ -248,11 +248,11 @@ static NSArray *cacheBoardArray;
 #pragma mark fetch data
 
 + (void)fetchAllBoards {
-    [VPTNetworkService request:@"http://bbs.fudan.edu.cn/bbs/all" completion:^(NSString * data, NSError * _Nullable error) {
+    [VPTNetworkService requestWithUrlString:@"http://bbs.fudan.edu.cn/bbs/all" method:@"GET" data:nil completionHandler:^(NSString *response, NSError *error) {
         if (error != nil)
             return ;
-        data = [data stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
-        ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[data dataUsingEncoding:NSUTF8StringEncoding] error:nil];
+        response = [response stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
+        ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[response dataUsingEncoding:NSUTF8StringEncoding] error:nil];
         NSMutableArray *boardArray = [NSMutableArray new];
         NSMutableDictionary *boardDictionary = [NSMutableDictionary new];
         for (ONOXMLElement *board in [document.rootElement childrenWithTag:@"brd"]){

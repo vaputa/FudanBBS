@@ -31,9 +31,6 @@
 + (BOOL)clearUserInformation;
 + (BOOL)setUserInformation:(NSDictionary *)userInformation;
 
-
-+ (BOOL)replyWithTitle:(NSString *)title boardId:(NSString *)boardId topic:(NSString *)topicId text:(NSString *)text;
-
 + (void)replyWithTitle:(NSString *)title
                boardId:(NSString *)boardId
                  topic:(NSString *)topicId
