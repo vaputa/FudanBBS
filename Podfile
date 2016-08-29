@@ -1,4 +1,5 @@
 use_frameworks!
+pod 'UITableView+FDTemplateLayoutCell'
 pod 'Masonry'
 pod 'Ono'
 pod 'AFNetworking'

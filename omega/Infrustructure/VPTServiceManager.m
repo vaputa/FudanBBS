@@ -218,7 +218,7 @@ static NSArray *cacheBoardArray;
                  password:(NSString *)password
                   success:(void (^_Nullable)(NSDictionary *))success
                   failure:(void (^_Nullable)(NSDictionary *))failure {
-    [VPTNetworkService requestWithUrlString:@"" method:@"POST"
+    [VPTNetworkService requestWithUrlString:@"https://bbs.fudan.edu.cn/bbs/login" method:@"POST"
                                        data:@{
                                               @"id": username,
                                               @"pw": password,

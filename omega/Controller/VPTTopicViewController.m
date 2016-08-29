@@ -18,6 +18,7 @@
 #import "VPTServiceManager.h"
 #import "VPTUtil.h"
 #import "VPTPost.h"
+#import "UITableView+FDTemplateLayoutCell.h"
 
 @interface VPTTopicViewController ()
 @property (nonatomic) BOOL showQuote;
@@ -30,9 +31,9 @@
 @property (nonatomic, strong) UIButton *btnFavourite;
 @property (nonatomic, strong) UIButton *btnQuote;
 @property (nonatomic, strong) UIButton *btnReply;
-@property (nonatomic, strong) NSMutableDictionary *imageDirectory;
-@property (nonatomic, strong) NSMutableSet *finishSet;
 @property (nonatomic, strong) NSArray *dataSource;
+@property (nonatomic, strong) NSMutableDictionary *cells;
+@property (nonatomic, strong) NSMutableDictionary *images;
 @end
 
 @implementation VPTTopicViewController
@@ -47,9 +48,9 @@
         });
     }];
 
-    _imageDirectory = [NSMutableDictionary new];
-    _finishSet = [NSMutableSet new];
-
+    _cells = [NSMutableDictionary new];
+    _images = [NSMutableDictionary new];
+    
     _tableView = [[UITableView alloc] init];
     [_tableView setDelegate:self];
     [_tableView setDataSource:self];
@@ -206,14 +207,12 @@
 }
 
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
-    VPTPostTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VPTPostTableViewCell" forIndexPath:indexPath];
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    VPTPostTableViewCell *cell = [VPTPostTableViewCell new];
     VPTPost *post = _dataSource[indexPath.row];
     [cell setTableView:_tableView];
     [cell setIndexPath:indexPath];
-    [cell setFinishSet:_finishSet];
-    [cell setImageDictionary:_imageDirectory];
-    
+    [cell setImageDictionary:_images];
     [cell configureFlatCellWithColor:[UIColor cloudsColor]
                        selectedColor:nil
                      roundingCorners:UIRectCornerTopLeft | UIRectCornerTopRight];
@@ -226,50 +225,30 @@
     [attributeString addAttributes:@{NSForegroundColorAttributeName: [UIColor peterRiverColor]} range:NSMakeRange(5, [text length])];
     [cell.user setAttributedText:attributeString];
     
-    [cell buildContent:post.content withReload:YES];
-    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     if (_showQuote) {
         cell.reply.text = post.reply;
     } else {
         cell.reply.text = nil;
     }
+    [cell buildContent:post.content];
+    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+
     if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
         [cell setSeparatorInset:UIEdgeInsetsZero];
     }
     if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
         [cell setLayoutMargins:UIEdgeInsetsZero];
     }
+    _cells[indexPath] = cell;
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    VPTPostTableViewCell *cell = [[VPTPostTableViewCell alloc] init];
-    VPTPost *post = _dataSource[indexPath.row];
-    [cell setTableView:_tableView];
-    [cell setIndexPath:indexPath];
-    [cell setFinishSet:_finishSet];
-    [cell setImageDictionary:_imageDirectory];
-
-    cell.date.text = [post.date timeAgo];
-    
-    NSString *text = [NSString stringWithFormat:@"%@ (%@)", post.owner, post.nick];
-    NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"发信人: %@", text]];
-    [attributeString addAttributes:@{NSForegroundColorAttributeName: [UIColor peterRiverColor]} range:NSMakeRange(5, [text length])];
-    [cell.user setAttributedText:attributeString];
-    
-    [cell buildContent:post.content withReload:NO];
-    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-    if (_showQuote) {
-        cell.reply.text = post.reply;
-    } else {
-        cell.reply.text = nil;
+    VPTPostTableViewCell *cell = _cells[indexPath];
+    if (cell == nil) {
+        return 55;
     }
-
-    [cell setNeedsUpdateConstraints];
-    [cell updateConstraintsIfNeeded];
-    [cell setNeedsLayout];
-    [cell layoutIfNeeded];
-    return [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+    return cell.height;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{

@@ -12,6 +12,10 @@
 #import "VPTPostTableViewCell.h"
 #import "Masonry/Masonry.h"
 
+@interface VPTPostTableViewCell ()
+@property (nonatomic) BOOL isInUse;
+@end
+
 @implementation VPTPostTableViewCell
 
 - (void)awakeFromNib {
@@ -70,15 +74,16 @@
     return self;
 }
 
-
-- (void)buildContent:(NSArray *)content withReload:(BOOL)reload {
+- (void)prepareForReuse {
     if ([_content subviews]) {
-         for (UIView *view in [_content subviews]) {
-             [view removeFromSuperview];
-         }
+        for (UIView *view in [_content subviews]) {
+            [view removeFromSuperview];
+        }
     }
+}
+
+- (void)buildContent:(NSArray *)content {
     MASViewAttribute* last = [_content mas_top];
-    NSMutableArray *imageLoader = [NSMutableArray new];
     for (NSDictionary *para in content) {
         if ([[para objectForKey:@"type"] isEqualToString:@"text"]) {
             UILabel *label = [UILabel new];
@@ -109,45 +114,40 @@
                     make.height.lessThanOrEqualTo(@(image.size.height / image.size.width * ([UIScreen mainScreen].bounds.size.width - 20)));
                 }];
             } else {
-                [imageLoader addObject:[RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
-                    [imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"icon_hot_selected"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                        @synchronized(_imageDictionary) {
-                            [_imageDictionary setObject:image forKey:url];
+                [imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"icon_hot_selected"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                    @synchronized(_imageDictionary) {
+                        [_imageDictionary setObject:image forKey:url];
+                        if (!imageView) {
+                            return ;
                         }
-                        [subscriber sendCompleted];
-                    }];
-                    return nil;
-                }]];
+                        [imageView setImage:image];
+                        [imageView mas_updateConstraints:^(MASConstraintMaker *make) {
+                            make.width.lessThanOrEqualTo(@(image.size.width));
+                            make.height.lessThanOrEqualTo(@(image.size.height));
+                            make.height.lessThanOrEqualTo(@(image.size.height / image.size.width * ([UIScreen mainScreen].bounds.size.width - 20)));
+                        }];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            _height = [self.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+                            [_tableView beginUpdates];
+                            [_tableView reloadRowsAtIndexPaths:@[_indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                            [_tableView endUpdates];
+                        });
+                    }
+                }];
             }
             [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.width.lessThanOrEqualTo(_content);
                 make.centerX.equalTo(_content);
-                make.top.equalTo(last);
+                make.top.equalTo(last).offset(10);
             }];
             last = [imageView mas_bottom];
-        }
-    }
-    if (![_finishSet containsObject:_indexPath]) {
-        if ([imageLoader count] > 0) {
-            [[RACSignal combineLatest:imageLoader] subscribeCompleted:^{
-                if (reload && ![_finishSet containsObject:_indexPath]) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [_tableView beginUpdates];
-                        [_tableView reloadRowsAtIndexPaths:@[_indexPath] withRowAnimation:UITableViewRowAnimationFade];
-                        [_tableView endUpdates];
-                    });
-                }
-            }];
-        } else {
-            @synchronized(_finishSet) {
-                [_finishSet addObject:_indexPath];
-            }
         }
     }
     [_content mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(last);
     }];
     [_content sizeToFit];
+    _height = [self.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
 }
 
 - (void)layoutSubviews{
