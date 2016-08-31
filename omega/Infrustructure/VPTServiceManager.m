@@ -333,6 +333,11 @@ static NSArray *cacheBoardArray;
                                                              @"type": @"image",
                                                              @"href": [a attributes][@"href"]
                                                              }];
+                                    } else {
+                                        [content addObject:@{
+                                                             @"type": @"text",
+                                                             @"text": [a attributes][@"href"]
+                                                             }];
                                     }
                                 }
                             }

@@ -114,6 +114,7 @@
 - (void)toggleQuote {
     _showQuote = !_showQuote;
     [_btnQuote setBackgroundImage:[UIImage imageNamed:_showQuote ? @"icon_quote" : @"icon_unquote"] forState:UIControlStateNormal];
+    [_cells removeAllObjects];
     [_tableView reloadData];
 }
 
@@ -194,6 +195,7 @@
 }
 
 - (void)reloadTableView {
+    [_cells removeAllObjects];
     [_prevPage setHidden:[[(VPTPost *)[_dataSource firstObject] attributes][@"fid"] isEqualToString:_gid]];
     [_nextPage setHidden:[_dataSource count] != 20];
     [_footerView setHidden:[_nextPage isHidden] && [_prevPage isHidden]];
@@ -208,6 +210,9 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    if (_cells[indexPath] && [(VPTPostTableViewCell *)_cells[indexPath] ready]) {
+        return _cells[indexPath];
+    }
     VPTPostTableViewCell *cell = [VPTPostTableViewCell new];
     VPTPost *post = _dataSource[indexPath.row];
     [cell setTableView:_tableView];

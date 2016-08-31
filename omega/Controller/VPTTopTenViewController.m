@@ -125,6 +125,7 @@
     label.adjustsFontSizeToFitWidth = YES;
     label.textColor = [UIColor cloudsColor];
     label.highlightedTextColor = [UIColor greenSeaColor];
+    label.tag = -1;
     
     [cell.contentView addSubview:label];
     [cell.textLabel mas_makeConstraints:^(MASConstraintMaker *make) {

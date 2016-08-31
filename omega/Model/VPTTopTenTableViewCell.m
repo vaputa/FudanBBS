@@ -15,6 +15,10 @@
     return self;
 }
 
+- (void)prepareForReuse {
+    [[self.contentView viewWithTag:-1] removeFromSuperview];
+}
+
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code

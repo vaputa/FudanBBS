@@ -25,6 +25,7 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     if (self) {
+        _ready = 1;
         _user = [[UILabel alloc] init];
         _date = [[UILabel alloc] init];
         _reply = [[UILabel alloc] init];
@@ -56,7 +57,7 @@
             make.right.equalTo(_content);
         }];
         [_content mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.width.equalTo(self.contentView).offset(-5);
+            make.width.equalTo(self.contentView).offset(-10);
             make.top.equalTo(_date.mas_bottom).offset(10);
             make.bottom.equalTo(_reply.mas_top).offset(-10);
             make.centerX.equalTo(self.contentView);
@@ -75,37 +76,51 @@
 }
 
 - (void)prepareForReuse {
-    if ([_content subviews]) {
-        for (UIView *view in [_content subviews]) {
-            [view removeFromSuperview];
-        }
-    }
+    _ready = 1;
+    [_content.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
 }
 
 - (void)buildContent:(NSArray *)content {
-    MASViewAttribute* last = [_content mas_top];
+    MASViewAttribute *last = [_content mas_top];
+    UIView *lastView = nil;
     for (NSDictionary *para in content) {
         if ([[para objectForKey:@"type"] isEqualToString:@"text"]) {
-            UILabel *label = [UILabel new];
-            [label setText:[para objectForKey:@"text"]];
-            [label setNumberOfLines:0];
-            [label setTextColor:[UIColor midnightBlueColor]];
-            [label setFont:[UIFont systemFontOfSize:16]];
-            [_content addSubview:label];
-            [label setPreferredMaxLayoutWidth:[[UIScreen mainScreen] bounds].size.width - 20];
-            [label sizeToFit];
-            [label mas_remakeConstraints:^(MASConstraintMaker *make) {
-                make.width.equalTo(_content);
-                make.centerX.equalTo(_content);
-                make.top.equalTo(last);
-            }];
-            last = [label mas_bottom];
+            UITextView *textView = nil;
+            if ([lastView isKindOfClass:[UITextView class]]) {
+                textView = (UITextView *)lastView;
+                [textView setText:[NSString stringWithFormat:@"%@\n%@", textView.text, para[@"text"]]];
+                [textView mas_updateConstraints:^(MASConstraintMaker *make) {
+                    make.height.mas_equalTo([textView sizeThatFits:CGSizeMake([[UIScreen mainScreen] bounds].size.width - 10, FLT_MAX)].height);
+                }];
+            } else {
+                textView = [UITextView new];
+                [textView setScrollEnabled:NO];
+                [textView setText:para[@"text"]];
+                [textView setBackgroundColor:[UIColor clearColor]];
+                [textView setEditable:NO];
+                [textView setTextColor:[UIColor midnightBlueColor]];
+                [textView setFont:[UIFont systemFontOfSize:15]];
+                [_content addSubview:textView];
+                [textView mas_remakeConstraints:^(MASConstraintMaker *make) {
+                    make.width.equalTo(_content);
+                    make.centerX.equalTo(_content);
+                    make.top.equalTo(last);
+                    make.height.mas_equalTo([textView sizeThatFits:CGSizeMake([[UIScreen mainScreen] bounds].size.width - 10, FLT_MAX)].height);
+                }];
+                last = [textView mas_bottom];
+                lastView = textView;
+            }
         } else if ([[para objectForKey:@"type"] isEqualToString:@"image"]) {
             NSURL *url = [NSURL URLWithString:[para objectForKey:@"href"]];
             UIImageView *imageView = [[UIImageView alloc] init];
             [_content addSubview:imageView];
             [imageView setContentMode:UIViewContentModeScaleAspectFit];
-            if ([_imageDictionary objectForKey:url]) {
+            if ([[_imageDictionary objectForKey:url] isEqual:[NSNull null]]) {
+                [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+                    make.width.mas_equalTo(0);
+                    make.height.mas_equalTo(0);
+                }];
+            } else if ([_imageDictionary objectForKey:url]) {
                 UIImage *image = [_imageDictionary objectForKey:url];
                 [imageView setImage:image];
                 [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -114,10 +129,15 @@
                     make.height.lessThanOrEqualTo(@(image.size.height / image.size.width * ([UIScreen mainScreen].bounds.size.width - 20)));
                 }];
             } else {
+                _ready = 0;
                 [imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"icon_hot_selected"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                     @synchronized(_imageDictionary) {
-                        [_imageDictionary setObject:image forKey:url];
-                        if (!imageView) {
+                        if (image == nil) {
+                            [_imageDictionary setObject:[NSNull null] forKey:url];
+                        } else {
+                            [_imageDictionary setObject:image forKey:url];
+                        }
+                        if (!imageView || !image) {
                             return ;
                         }
                         [imageView setImage:image];
@@ -141,6 +161,7 @@
                 make.top.equalTo(last).offset(10);
             }];
             last = [imageView mas_bottom];
+            lastView = imageView;
         }
     }
     [_content mas_makeConstraints:^(MASConstraintMaker *make) {

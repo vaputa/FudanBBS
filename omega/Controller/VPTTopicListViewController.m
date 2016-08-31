@@ -77,7 +77,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationItem setTitle:_boardName];
-    if (_topicListViewType ==VPTTopicListViewTypeDataFromFavourite) {
+    if (_topicListViewType == VPTTopicListViewTypeDataFromFavourite) {
         _dataSource = [VPTServiceManager getFavouriteTopicList];
         [_tableView reloadData];
     }

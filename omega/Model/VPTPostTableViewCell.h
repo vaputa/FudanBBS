@@ -18,7 +18,7 @@
 @property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, strong) NSMutableSet *finishSet;
 @property (nonatomic, strong) NSMutableDictionary *imageDictionary;
-
+@property (nonatomic) BOOL ready;
 - (void)buildContent:(NSArray *)content;
 
 @end
