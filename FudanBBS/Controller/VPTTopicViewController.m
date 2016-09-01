@@ -132,7 +132,7 @@
     if (_footerView) {
         return _footerView;
     }
-    _footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 50)];
+    _footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 60)];
 
     _prevPage = [[FUIButton alloc] init];
     _nextPage = [[FUIButton alloc] init];
@@ -163,15 +163,15 @@
     [_footerView addSubview:_nextPage];
     
     [_prevPage mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo(_footerView).dividedBy(3.0);
-        make.height.equalTo(_footerView).offset(-10);
-        make.right.equalTo(_footerView.mas_centerX);
+        make.width.equalTo(_footerView).multipliedBy(0.3);
+        make.height.equalTo(_footerView).offset(-20);
+        make.right.equalTo(_footerView.mas_centerX).offset(-30);
         make.centerY.equalTo(_footerView);
     }];
     [_nextPage mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo(_footerView).dividedBy(3.0);
-        make.height.equalTo(_footerView).offset(-10);
-        make.left.equalTo(_footerView.mas_centerX);
+        make.width.equalTo(_footerView).multipliedBy(0.3);
+        make.height.equalTo(_footerView).offset(-20);
+        make.left.equalTo(_footerView.mas_centerX).offset(30);
         make.centerY.equalTo(_footerView);
     }];
     return _footerView;
