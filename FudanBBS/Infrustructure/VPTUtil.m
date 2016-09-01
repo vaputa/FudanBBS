@@ -1,6 +1,6 @@
 //
 //  VPTUtil.m
-//  omega
+//  FudanBBS
 //
 //  Created by leon on 3/20/16.
 //  Copyright © 2016 vaputa. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  VPTReplyViewController.m
-//  omega
+//  FudanBBS
 //
 //  Created by leon on 4/17/16.
 //  Copyright © 2016 vaputa. All rights reserved.

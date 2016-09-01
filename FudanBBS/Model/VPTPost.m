@@ -1,13 +1,13 @@
 //
-//  VPTTopicDetail.m
-//  omega
+//  VPTPost.m
+//  FudanBBS
 //
 //  Created by leon on 8/28/16.
 //  Copyright © 2016 vaputa. All rights reserved.
 //
 
-#import "VPTTopicDetail.h"
+#import "VPTPost.h"
 
-@implementation VPTTopicDetail
+@implementation VPTPost
 
 @end

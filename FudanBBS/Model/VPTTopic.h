@@ -1,6 +1,6 @@
 //
 //  VPTTopic.h
-//  omega
+//  FudanBBS
 //
 //  Created by leon on 8/27/16.
 //  Copyright © 2016 vaputa. All rights reserved.

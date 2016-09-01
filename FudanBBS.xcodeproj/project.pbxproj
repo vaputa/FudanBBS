@@ -126,7 +126,7 @@
 		35942B091C89F1BE00CD8BE6 /* VPTPostTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTPostTableViewCell.m; path = Model/VPTPostTableViewCell.m; sourceTree = "<group>"; };
 		35AFB37B1C9EBE1C000A8B0C /* VPTUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VPTUtil.h; path = Infrustructure/VPTUtil.h; sourceTree = "<group>"; };
 		35AFB37C1C9EBE1C000A8B0C /* VPTUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VPTUtil.m; path = Infrustructure/VPTUtil.m; sourceTree = "<group>"; };
-		35D443A91C847019001B4D02 /* omega.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = omega.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		35D443A91C847019001B4D02 /* FudanBBS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FudanBBS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		35D443AD1C847019001B4D02 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		35D443AF1C847019001B4D02 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		35D443B01C847019001B4D02 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -236,7 +236,7 @@
 		35D443A01C847019001B4D02 = {
 			isa = PBXGroup;
 			children = (
-				35D443AB1C847019001B4D02 /* omega */,
+				35D443AB1C847019001B4D02 /* FudanBBS */,
 				35D443AA1C847019001B4D02 /* Products */,
 				6170164D6F20D83D58937FD7 /* Pods */,
 				9C5F233F4C308B471F23D948 /* Frameworks */,
@@ -246,12 +246,12 @@
 		35D443AA1C847019001B4D02 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				35D443A91C847019001B4D02 /* omega.app */,
+				35D443A91C847019001B4D02 /* FudanBBS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		35D443AB1C847019001B4D02 /* omega */ = {
+		35D443AB1C847019001B4D02 /* FudanBBS */ = {
 			isa = PBXGroup;
 			children = (
 				35D443E01C8470D3001B4D02 /* Model */,
@@ -261,7 +261,7 @@
 				358D12F41D72C9BC005645AB /* vendor */,
 				35D443AC1C847019001B4D02 /* Supporting Files */,
 			);
-			path = omega;
+			path = FudanBBS;
 			sourceTree = "<group>";
 		};
 		35D443AC1C847019001B4D02 /* Supporting Files */ = {
@@ -355,9 +355,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		35D443A81C847019001B4D02 /* omega */ = {
+		35D443A81C847019001B4D02 /* FudanBBS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 35D443D61C847019001B4D02 /* Build configuration list for PBXNativeTarget "omega" */;
+			buildConfigurationList = 35D443D61C847019001B4D02 /* Build configuration list for PBXNativeTarget "FudanBBS" */;
 			buildPhases = (
 				824AF36419390ADA9F726AC1 /* Check Pods Manifest.lock */,
 				35D443A51C847019001B4D02 /* Sources */,
@@ -370,9 +370,9 @@
 			);
 			dependencies = (
 			);
-			name = omega;
-			productName = omega;
-			productReference = 35D443A91C847019001B4D02 /* omega.app */;
+			name = FudanBBS;
+			productName = FudanBBS;
+			productReference = 35D443A91C847019001B4D02 /* FudanBBS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -390,7 +390,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 35D443A41C847019001B4D02 /* Build configuration list for PBXProject "omega" */;
+			buildConfigurationList = 35D443A41C847019001B4D02 /* Build configuration list for PBXProject "FudanBBS" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -403,7 +403,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				35D443A81C847019001B4D02 /* omega */,
+				35D443A81C847019001B4D02 /* FudanBBS */,
 			);
 		};
 /* End PBXProject section */
@@ -613,7 +613,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				INFOPLIST_FILE = omega/Info.plist;
+				INFOPLIST_FILE = FudanBBS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vaputa.fudanbbs;
@@ -630,7 +630,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				INFOPLIST_FILE = omega/Info.plist;
+				INFOPLIST_FILE = FudanBBS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vaputa.fudanbbs;
@@ -643,7 +643,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		35D443A41C847019001B4D02 /* Build configuration list for PBXProject "omega" */ = {
+		35D443A41C847019001B4D02 /* Build configuration list for PBXProject "FudanBBS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				35D443D41C847019001B4D02 /* Debug */,
@@ -652,7 +652,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		35D443D61C847019001B4D02 /* Build configuration list for PBXNativeTarget "omega" */ = {
+		35D443D61C847019001B4D02 /* Build configuration list for PBXNativeTarget "FudanBBS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				35D443D71C847019001B4D02 /* Debug */,
