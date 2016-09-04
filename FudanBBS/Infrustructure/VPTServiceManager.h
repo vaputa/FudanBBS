@@ -12,6 +12,8 @@
 
 @interface VPTServiceManager : NSObject
 
++ (BOOL)isLogin;
+
 + (NSArray *)getFavouriteTopicList;
 + (BOOL)addToFavouriteTopicListWithBoardName:(NSString *)boardName boardId:(NSString *)boardId topicId:(NSString *)topicId title:(NSString *)title;
 + (BOOL)removeFromFavouriteTopicListWithBoardName:(NSString *)boardName boardId:(NSString *)boardId topicId:(NSString *)topicId;

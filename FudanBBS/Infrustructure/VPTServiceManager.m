@@ -23,6 +23,10 @@ static NSArray *cacheBoardArray;
 
 #pragma mark favourite topics
 
++ (BOOL)isLogin {
+    return [[VPTServiceManager getUserInformation] count] > 0;
+}
+
 + (NSArray *)getFavouriteTopicList {
     return [[self defaultStorage] objectForKey:@"favouriteTopics"];
 }

@@ -41,7 +41,7 @@
 }
 
 - (void)updateDataSource {
-    if ([[VPTServiceManager getUserInformation] count]) {
+    if ([VPTServiceManager isLogin]) {
         _data = @[@"我收藏的板块", @"我收藏的帖子", @"登出"];
         _isLogin = 1;
     } else {
