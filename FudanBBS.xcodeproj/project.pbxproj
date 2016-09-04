@@ -359,6 +359,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 35D443D61C847019001B4D02 /* Build configuration list for PBXNativeTarget "FudanBBS" */;
 			buildPhases = (
+				35F862D91D795B72006C15D6 /* ShellScript */,
 				824AF36419390ADA9F726AC1 /* Check Pods Manifest.lock */,
 				35D443A51C847019001B4D02 /* Sources */,
 				35D443A61C847019001B4D02 /* Frameworks */,
@@ -386,7 +387,6 @@
 				TargetAttributes = {
 					35D443A81C847019001B4D02 = {
 						CreatedOnToolsVersion = 7.2.1;
-						DevelopmentTeam = LPUCQWYT2V;
 					};
 				};
 			};
@@ -425,6 +425,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		35F862D91D795B72006C15D6 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ $CONFIGURATION == Release ]; then\necho \"Bumping build number...\"\nplist=${PROJECT_DIR}/${INFOPLIST_FILE}\n\n# increment the build number (ie 115 to 116)\nbuildnum=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${plist}\")\nif [[ \"${buildnum}\" == \"\" ]]; then\necho \"No build number in $plist\"\nexit 2\nfi\n\nbuildnum=$(expr $buildnum + 1)\n/usr/libexec/Plistbuddy -c \"Set CFBundleVersion $buildnum\" \"${plist}\"\necho \"Bumped build number to $buildnum\"\n\nelse\necho $CONFIGURATION \" build - Not bumping build number.\"\nfi";
+		};
 		824AF36419390ADA9F726AC1 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -611,6 +624,7 @@
 			baseConfigurationReference = E0D3B8523D89B120268D6EB0 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = FudanBBS/Info.plist;
@@ -628,6 +642,7 @@
 			baseConfigurationReference = 2AEF0BB7835F2995117E6C80 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = FudanBBS/Info.plist;
