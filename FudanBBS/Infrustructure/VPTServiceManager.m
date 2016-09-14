@@ -12,6 +12,7 @@
 #import "VPTUtil.h"
 
 #import <Ono/Ono.h>
+#define kScheme @"https"
 
 @interface VPTServiceManager()
 @end
@@ -209,7 +210,7 @@ static NSArray *cacheBoardArray;
                  topic:(NSString *)topicId
                   text:(NSString *)text
      completionHandler:(void (^)(id result, NSError *error))completionHandler {
-    NSString *url = [[NSString alloc] initWithFormat:@"https://bbs.fudan.edu.cn/bbs/snd?board=%@&f=%@&utf8=1", boardId, topicId];
+    NSString *url = [[NSString alloc] initWithFormat:@"%@://bbs.fudan.edu.cn/bbs/snd?board=%@&f=%@&utf8=1", kScheme, boardId, topicId];
     NSDictionary *data = @{@"title":title, @"sig":@"1", @"text":text};
     [VPTNetworkService requestWithUrlString:url method:@"POST" data:data completionHandler:^(NSString *response, NSError *error) {
         completionHandler(response, error);
@@ -222,7 +223,8 @@ static NSArray *cacheBoardArray;
                  password:(NSString *)password
                   success:(void (^_Nullable)(NSDictionary *))success
                   failure:(void (^_Nullable)(NSDictionary *))failure {
-    [VPTNetworkService requestWithUrlString:@"https://bbs.fudan.edu.cn/bbs/login" method:@"POST"
+    NSString *url = [NSString stringWithFormat:@"%@://bbs.fudan.edu.cn/bbs/login", kScheme];
+    [VPTNetworkService requestWithUrlString:url method:@"POST"
                                        data:@{
                                               @"id": username,
                                               @"pw": password,
@@ -246,13 +248,15 @@ static NSArray *cacheBoardArray;
                           }];
 }
 + (void)logout {
-    [VPTNetworkService requestWithUrlString:@"http://bbs.fudan.edu.cn/bbs/logout" method:@"GET" data:nil completionHandler:nil];
+    NSString *url = [NSString stringWithFormat:@"%@://bbs.fudan.edu.cn/bbs/logout", kScheme];
+    [VPTNetworkService requestWithUrlString:url method:@"GET" data:nil completionHandler:nil];
 }
 
 #pragma mark fetch data
 
 + (void)fetchAllBoards {
-    [VPTNetworkService requestWithUrlString:@"http://bbs.fudan.edu.cn/bbs/all" method:@"GET" data:nil completionHandler:^(NSString *response, NSError *error) {
+    NSString *url = [NSString stringWithFormat:@"%@://bbs.fudan.edu.cn/bbs/all", kScheme];
+    [VPTNetworkService requestWithUrlString:url method:@"GET" data:nil completionHandler:^(NSString *response, NSError *error) {
         if (error != nil)
             return ;
         response = [response stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
@@ -269,7 +273,8 @@ static NSArray *cacheBoardArray;
 }
 
 + (void)fetchTopTenDataWithCompletionHandler:(void (^)(id result, NSError *error))completionHandler {
-    [VPTNetworkService requestWithUrlString:@"https://bbs.fudan.edu.cn/bbs/top10" method:@"GET" completionHandler:^(NSString *response, NSError *error) {
+    NSString *url = [NSString stringWithFormat:@"%@://bbs.fudan.edu.cn/bbs/top10", kScheme];
+    [VPTNetworkService requestWithUrlString:url method:@"GET" completionHandler:^(NSString *response, NSError *error) {
         if (!error) {
             NSString *data = [response stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
             NSMutableArray *result = [NSMutableArray new];
@@ -296,13 +301,13 @@ static NSArray *cacheBoardArray;
     NSString *url = nil;
     switch (type) {
         case 0:
-            url = [NSString stringWithFormat:@"https://bbs.fudan.edu.cn/bbs/tcon?new=1&board=%@&f=%@", boardId, gid];
+            url = [NSString stringWithFormat:@"%@://bbs.fudan.edu.cn/bbs/tcon?new=1&board=%@&f=%@", kScheme, boardId, gid];
             break;
         case 1:
-            url = [NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/tcon?new=1&board=%@&g=%@&f=%@&a=p", boardId, gid, fid];
+            url = [NSString stringWithFormat:@"%@://bbs.fudan.edu.cn/bbs/tcon?new=1&board=%@&g=%@&f=%@&a=p", kScheme, boardId, gid, fid];
             break;
         case 2:
-            url = [NSString stringWithFormat:@"http://bbs.fudan.edu.cn/bbs/tcon?new=1&board=%@&g=%@&f=%@&a=n", boardId, gid, fid];
+            url = [NSString stringWithFormat:@"%@://bbs.fudan.edu.cn/bbs/tcon?new=1&board=%@&g=%@&f=%@&a=n", kScheme, boardId, gid, fid];
             break;
         default:
             break;
@@ -367,7 +372,7 @@ static NSArray *cacheBoardArray;
 }
 
 + (void)fetchBoardListWithSection:(NSString *)section completionHandler:(void (^)(id result, NSError *error))completionHandler {
-    NSString *url = [NSString stringWithFormat:@"https://bbs.fudan.edu.cn/bbs/boa?s=%@", section];
+    NSString *url = [NSString stringWithFormat:@"%@://bbs.fudan.edu.cn/bbs/boa?s=%@", kScheme, section];
     [VPTNetworkService requestWithUrlString:url method:@"GET" completionHandler:^(NSString *response, NSError *error) {
         if (!error) {
             response = [response stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
@@ -389,7 +394,7 @@ static NSArray *cacheBoardArray;
 }
 
 + (void)fetchSubdirectoryWithBoard:(NSString *)board completionHandler:(void (^)(id result, NSError *error))completionHandler {
-    NSString *url = [NSString stringWithFormat:@"https://bbs.fudan.edu.cn/bbs/boa?board=%@", board];
+    NSString *url = [NSString stringWithFormat:@"%@://bbs.fudan.edu.cn/bbs/boa?board=%@", kScheme, board];
    [VPTNetworkService requestWithUrlString:url method:@"GET" completionHandler:^(NSString *response, NSError *error) {
         if (!error) {
             response = [response stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
@@ -412,7 +417,8 @@ static NSArray *cacheBoardArray;
 
 
 + (void)fetchAllBoardSectionsWithcompletionHandler:(void (^)(id result, NSError *error))completionHandler {
-    [VPTNetworkService requestWithUrlString:@"https://bbs.fudan.edu.cn/bbs/sec" method:@"GET" completionHandler:^(NSString *response, NSError *error) {
+    NSString *url = [NSString stringWithFormat:@"%@://bbs.fudan.edu.cn/bbs/sec", kScheme];
+    [VPTNetworkService requestWithUrlString:url method:@"GET" completionHandler:^(NSString *response, NSError *error) {
         if (!error) {
             response = [response stringByReplacingOccurrencesOfString:@"gb18030" withString:@"UTF-8"];
             ONOXMLDocument *document = [ONOXMLDocument XMLDocumentWithData:[response dataUsingEncoding:NSUTF8StringEncoding] error:nil];
@@ -439,9 +445,9 @@ static NSArray *cacheBoardArray;
 + (void)fetchTopicWithBoard:(NSString *)board start:(NSUInteger)start completionHandler:(void (^)(id result, NSError *error))completionHandler {
     NSString *url = nil;
     if (start) {
-        url = [NSString stringWithFormat:@"https://bbs.fudan.edu.cn/bbs/tdoc?new=1&board=%@&start=%lu", board, (unsigned long)start];
+        url = [NSString stringWithFormat:@"%@://bbs.fudan.edu.cn/bbs/tdoc?new=1&board=%@&start=%lu", kScheme, board, (unsigned long)start];
     } else {
-        url = [NSString stringWithFormat:@"https://bbs.fudan.edu.cn/bbs/tdoc?board=%@", board];
+        url = [NSString stringWithFormat:@"%@://bbs.fudan.edu.cn/bbs/tdoc?board=%@", kScheme, board];
     }
     [VPTNetworkService requestWithUrlString:url method:@"GET" completionHandler:^(NSString *response, NSError *error) {
         if (!error) {
